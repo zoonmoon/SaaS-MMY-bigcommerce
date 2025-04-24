@@ -108,8 +108,8 @@ export async function fetchProducts(storeHash, accessToken, lastSynchronizedAt =
                 break 
 
             currentPage += 1
-
-        }
+            
+        }   
 
         const resp = await openSearchClient.deleteByQuery({
             index: 'product',
@@ -136,7 +136,7 @@ export async function fetchProducts(storeHash, accessToken, lastSynchronizedAt =
             ]);
 
             await openSearchClient.bulk({index: 'product', body });
-            
+
         }
 
     }catch(error){

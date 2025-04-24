@@ -4,6 +4,7 @@ import { fetchStoreData } from "./fetch_store_data";
 import { hashVsNewData } from "./hash_vs_data";
 import { validateSpreadsheetURL } from "../../update-google-sheet-url/route";
 import openSearchClient from "@/app/api/_lib/opensearch";
+import { updateSearchKeywords } from "./update-search-keywords";
 
 
 export async function syncFitmentData(storeHash){
@@ -12,8 +13,14 @@ export async function syncFitmentData(storeHash){
         
         let storeData = await fetchStoreData(storeHash) 
 
+        if(!('access_token' in storeData )) throw new Error('Access token not found')
+        
+        let accessToken = storeData.access_token
+    
+        if(!('selectedDropdownFilters' in storeData )) throw new Error('store lacks dropdown filters')
+        
         let selectedDropdownFilters = storeData.selectedDropdownFilters || []
-
+        
         if(selectedDropdownFilters.length == 0) throw new Error("Store lacks dropdown filters")
         
         let columnContainingProductIDs = storeData?.columnContainingProductIDs || ''
@@ -30,7 +37,7 @@ export async function syncFitmentData(storeHash){
 
         // let existingFitmentData = await fetchFitmentDataFromDatabase();
         
-        let hashesVsNewFitmentData = hashVsNewData(selectedDropdownFilters, columnContainingProductIDs,  newFitmentData)
+        let {hashesVsRows: hashesVsNewFitmentData, pidVsHashes}  = hashVsNewData(selectedDropdownFilters, columnContainingProductIDs,  newFitmentData)
         
         await openSearchClient.deleteByQuery({
             index: 'specs_rows',
@@ -52,21 +59,25 @@ export async function syncFitmentData(storeHash){
                 doc
             ]);
 
+            console.log(JSON.stringify(body))
+
             const response = await openSearchClient.bulk({index: 'specs_rows', body });
-            
+
         }
+
+        await updateSearchKeywords(pidVsHashes, storeHash, accessToken)
+        
         
         // new data
         // old data
         // find to be deleted
         // find to be added new 
-        
 
     }catch(error){
 
-        console.log(error.message)
-        throw error 
+        console.log(error)
 
+        throw error 
 
     }
 }

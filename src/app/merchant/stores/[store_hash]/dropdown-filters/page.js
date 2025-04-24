@@ -87,7 +87,7 @@ export default function StoreDetails({params}){
             if(responseJSON.success !== true) throw new Error(responseJSON.message) 
 
             toast("Changes saved")
-
+            
         }catch(error){ 
             toast(error.message)
         }finally{

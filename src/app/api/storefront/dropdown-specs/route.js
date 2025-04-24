@@ -131,7 +131,7 @@ export async function GET(request){
         })
 
         return new Response(
-            JSON.stringify({ dropdownData, responseContainsValidSpecsSettings, specsSettings})
+            JSON.stringify({query, aggs, dropdownData, responseContainsValidSpecsSettings, specsSettings})
         )
         
     }catch(error){

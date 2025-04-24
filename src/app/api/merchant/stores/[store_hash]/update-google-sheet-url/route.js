@@ -24,11 +24,13 @@ export async function POST(request){
 
         validateSpreadsheetURL(newSpreadSheetURL);
 
-        await client.update({
+        await openSearchClient.update({
             index: 'stores',
             id: docID,
-            doc: {
-              spreadsheet_url: newSpreadSheetURL
+            body: {
+              doc: {
+                spreadsheet_url: newSpreadSheetURL
+              }
             }
         });
 

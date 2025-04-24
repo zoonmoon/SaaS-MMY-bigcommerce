@@ -86,13 +86,7 @@ const tabData = (storeData) => {
         {
             label: "Dropdown Filters",
             tabContent: <DropdownFilters storeData={storeData} />
-        },
-        {
-            label: "BigCommerce Integration",
-            tabContent: <div>BigCommerce Integration</div>
-        },
-        
-
+        }
     ]
 }
 
@@ -180,7 +174,6 @@ const GeneralInfo = ({storeData}) => {
     
     return(
         <div>
-            <Button onClick={syncProductCatalog}>Sync Product Catalog</Button>
             <Button onClick={syncFitmentSheet}>Sync Fitment Sheet</Button>
             <Stack spacing={2}>
                 <div><strong>Store Hash:</strong> <span> {storeData.store_hash}</span></div>

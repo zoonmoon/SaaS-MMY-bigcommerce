@@ -6,11 +6,13 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
 
         let hashesVsRows = {}
 
+        let pidVsHashes = {}
+
         newData.forEach(row => {
             
             let tempRow = {}
 
-            let hash = ''
+            let hashParts = []
 
             dropdownColumns.sort((a,b) => a.sort_order - b.sort_order).forEach(({label: col, key: col_key}) => {
 
@@ -20,18 +22,19 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
                 }
 
                 let value_label = row[col].trim()
-
+                
                 let value_key = sanitizeString(value_label) 
-
+                
                 tempRow[col_key] = {value_key, value_label} 
+                
+                hashParts.push(`${col_key}:${value_key}`)
 
-                hash += `${col_key}:${value_key}`
             })
-
+            
             if(!(columnContainingProductIDs in row)){
                 throw new Error(`'${columnContainingProductIDs}' column does not exist in google sheet`)
             }
-
+            
             // 123 | 34 | 234 | 456555 | 234 , ETC.
 
             tempRow[columnContainingProductIDs] = row[columnContainingProductIDs]
@@ -39,7 +42,16 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
                 .map(eachId => eachId.trim()) 
                 .filter(id => id.length != 0)
             
-            hash += `${columnContainingProductIDs}:${tempRow[columnContainingProductIDs].join('')}`
+            let hash = hashParts.join('::')
+            
+            tempRow[columnContainingProductIDs].forEach(pid => {
+                if(!(pid in pidVsHashes )){
+                    pidVsHashes[pid] = [] 
+                }
+                if (!pidVsHashes[pid].includes(hash))
+                    pidVsHashes[pid].push(hash)
+                
+            })
 
             tempRow['hash'] = hash
 
@@ -47,7 +59,7 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
 
         });        
 
-        return hashesVsRows
+        return {hashesVsRows, pidVsHashes}
 
     }catch(error){
 

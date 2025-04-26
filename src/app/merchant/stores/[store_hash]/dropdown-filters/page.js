@@ -69,13 +69,13 @@ export default function StoreDetails({params}){
         fetchStore()
     }, [])
 
-
-
     const handleDropdownFiltersSubmit =  async () => {
 
         try{
             setIsSaving(true) 
+
             const formdata = new FormData()
+            
             formdata.append('columnContainingProductIDs', columnContainingProductIDs) 
             formdata.append('selectedDropdownFilters', JSON.stringify(selectedDropdownFilters)) 
             formdata.append('doc_id', storeData.id) 
@@ -85,9 +85,9 @@ export default function StoreDetails({params}){
             const responseJSON = await response.json() 
 
             if(responseJSON.success !== true) throw new Error(responseJSON.message) 
-
-            toast("Changes saved")
             
+            toast("Changes saved")
+
         }catch(error){ 
             toast(error.message)
         }finally{

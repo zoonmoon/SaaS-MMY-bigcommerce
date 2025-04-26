@@ -175,6 +175,7 @@ const GeneralInfo = ({storeData}) => {
     return(
         <div>
             <Button onClick={syncFitmentSheet}>Sync Fitment Sheet</Button>
+            <Button onClick={syncProductCatalog}>Sync Product Catalog</Button>
             <Stack spacing={2}>
                 <div><strong>Store Hash:</strong> <span> {storeData.store_hash}</span></div>
                 <div><strong>Store Name:</strong> <span> {storeData.store_name}</span></div>

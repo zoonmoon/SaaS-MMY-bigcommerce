@@ -18,6 +18,8 @@ export async function updateSearchKeywords(pidVsHashes, storeHash, accessToken) 
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ search_keywords: searchKeywords })
+// IMPORTANT: in case the product does not show while selecting ymm, layout_file can be a culprit 
+                //body: JSON.stringify({ search_keywords: searchKeywords, layout_file: 'product.html' })
             });
 
             if (!response.ok) {

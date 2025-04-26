@@ -16,8 +16,6 @@ export async function syncProductCatalog(storeHash){
 
         let products = await fetchProducts(storeHash, accessToken)  
 
-
-
     }catch(error){
         throw error
     }

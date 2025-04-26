@@ -17,6 +17,7 @@ export async function fetchProducts(storeHash, accessToken, lastSynchronizedAt =
         let params = [
             'include=custom_fields,images', 
             'limit=250',
+            'id=186',
             'is_visible=true'
         ]
 
@@ -48,6 +49,9 @@ export async function fetchProducts(storeHash, accessToken, lastSynchronizedAt =
             
             let products = responseJSON.data
             
+            console.log(responseJSON);
+            return 
+
             products.forEach(product => {
        
                 let productWithRequiredProps = {

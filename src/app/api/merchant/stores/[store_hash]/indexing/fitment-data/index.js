@@ -59,8 +59,6 @@ export async function syncFitmentData(storeHash){
                 doc
             ]);
 
-            console.log(JSON.stringify(body))
-
             const response = await openSearchClient.bulk({index: 'specs_rows', body });
 
         }

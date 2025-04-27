@@ -89,12 +89,12 @@ export async function GET(request){
             var selectedSpecsInfoArr = selectedSpecsInfo.split('::') // key:val separaated by :: 
             selectedSpecsInfoArr.forEach(selectedVehicleSpec => {
                 let [key, val] = selectedVehicleSpec.split(':') 
-                must.push({ term: { [`row.${key}.value_key`]: val } });
+                must.push({ term: { [`row.${key}.value_key`]: val.toLowerCase() }});
             })
         }
 
         const query = { bool: { must } }
-
+        
         const aggs = {
             unique_key_values: {
               terms: {

@@ -1,5 +1,5 @@
 'use client'
-import { Alert, Breadcrumbs, Button, Container, Divider, FormControl, InputLabel, MenuItem, Paper, Select, Stack, Typography } from "@mui/material"
+import { Alert, Breadcrumbs, Container, Divider, FormControl, InputLabel, MenuItem, Paper, Select, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { use } from 'react'
 import toast from "react-hot-toast"
@@ -7,7 +7,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import Link from 'next/link';
 import DragAndDrop from "."
-
+import { LoadingSpinner } from "@/app/api/_lib/misc/utils"
+import { Button } from "@mui/joy"
 
 
 export default function StoreDetails({params}){
@@ -106,7 +107,7 @@ export default function StoreDetails({params}){
             {
                 isLoading 
                     ? (
-                        <>Loading</>
+                        <LoadingSpinner minHeight="200px" />
                     ): (    
                        <Paper sx={{padding:'15px'}}>
                             <div style={{display:'flex', flexWrap:'wrap', justifyContent:'space-between'}}> 
@@ -116,7 +117,7 @@ export default function StoreDetails({params}){
                                     </IconButton>
                                     <Breadcrumbs aria-label="breadcrumb">
                                         <Link underline="hover" style={{color:'unset'}} href="/merchant/stores">
-                                            Stores
+                                            stores
                                         </Link>
                                         <Link underline="hover" style={{color:'unset'}} href={"/merchant/stores/"+storeData.store_hash}>
                                             {storeData.store_name}
@@ -124,7 +125,7 @@ export default function StoreDetails({params}){
                                         <Typography sx={{ color: 'text.primary' }}>Dropdown Filters</Typography>
                                     </Breadcrumbs>
                                 </div>
-                                <div><Button loading={isSaving} onClick={handleDropdownFiltersSubmit} variant={'contained'}>Save Changes</Button></div>
+                                <div><Button loading={isSaving} onClick={handleDropdownFiltersSubmit} variant={'solid'}>Save Changes</Button></div>
                             </div>
                             <Divider sx={{margin:'10px 0 25px 0'}}></Divider>
 

@@ -7,11 +7,11 @@ export async function GET(){
         id: "AgtsSZYBDM2YJ48JhdOy",
         body: {
             doc: {
-                access_token: "3msb1bp2i5x4n1m74bx9y6hy39afyu8"
+                access_token: "ll06mbwwgtiqm2p3jw4377e3rirmrw0"
             }
         }
     });
 
     return new Response(JSON.stringify(updateResp))
-
+    
 }

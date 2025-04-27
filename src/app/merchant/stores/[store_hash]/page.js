@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { use } from 'react'
 import toast from "react-hot-toast"
 import StoreData from "./store_data"
+import { LoadingSpinner } from "@/app/api/_lib/misc/utils"
 
 export default function StoreDetails({params}){
 
@@ -51,7 +52,7 @@ export default function StoreDetails({params}){
             {
                 isLoading 
                     ? (
-                        <>Loading</>
+                        <LoadingSpinner  minHeight="200px"/>
                     ): (    
                         <StoreData storeData={storeData} />
                     )

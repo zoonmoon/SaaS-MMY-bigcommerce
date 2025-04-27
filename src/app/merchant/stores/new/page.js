@@ -1,8 +1,9 @@
 'use client'
-import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Container, Paper, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { Button } from "@mui/joy";
 export default function NewStore({params}){
 
     const [isLoading, setIsLoading ] = useState(false)
@@ -10,7 +11,14 @@ export default function NewStore({params}){
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        
+
+        const userConfirmed = window.confirm("Are you sure to create store confirming access token and store hash are correct?");
+
+        if(!userConfirmed){
+            toast('Store creation cancelled')
+            return 
+        }
+
         const formData = new FormData(e.currentTarget);
         const store_hash = formData.get('store_hash')
 
@@ -39,8 +47,8 @@ export default function NewStore({params}){
     };
 
     return(
-        <Container maxWidth="sm">
-            <Paper elevation={4} sx={{ p: 4, mt: 10 }}>
+        <Container maxWidth="sm"style={{marginBottom:'40px'}}>
+            <Paper elevation={4} sx={{ p: 4, mt: 6 }}>
                 <Typography variant="h5" textAlign="center" gutterBottom>
                     Add new Store
                 </Typography>
@@ -48,8 +56,13 @@ export default function NewStore({params}){
                 <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField label="Store Name" name="store_name" required fullWidth />
                     <TextField label="Store Hash" name="store_hash" required fullWidth />
-                    <TextField label="Access Token" name="access_token" type="password"  fullWidth />
-                    <Button loading={isLoading} type="submit" variant="contained" size="large">Add Store</Button>
+                    <Alert severity={'warning'}>Access token can not be edited or viewed again later for security purposes</Alert>
+                    <Alert severity={'info'}>
+                        Please provide <strong>modify</strong> access to following scopes: 
+                        <strong>Sites & routes, Content, </strong>and <strong>Products</strong> while creating API token
+                    </Alert>
+                    <TextField label="Access Token" name="access_token" type="password"  fullWidth required/>
+                    <Button loading={isLoading} type="submit" variant="solid">Add Store</Button>
                 </Box>
             </Paper>
         </Container>

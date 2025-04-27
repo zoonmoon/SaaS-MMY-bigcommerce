@@ -56,6 +56,7 @@ export const storesSchema = {
     access_token: {type: "text"},
     spreadsheet_url:  {type: "text"},
     last_indexed_at: {type: "text"},
+    is_script_added_in_bc: {type: "text"},
     specs: {
       type: "nested", 
       properties: {

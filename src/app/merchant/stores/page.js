@@ -1,4 +1,5 @@
 'use client'
+import { LoadingSpinner } from "@/app/api/_lib/misc/utils"
 import { Container, Grid, Paper } from "@mui/material"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -42,9 +43,7 @@ export default function Stores({params}){
             {
                 isLoading 
                     ?(
-                        <>
-                            Loading
-                        </>
+                        <LoadingSpinner minHeight="200px" />
                     ):(
                         <Grid container spacing={2}> 
                             {

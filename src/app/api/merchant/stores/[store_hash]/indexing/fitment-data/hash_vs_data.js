@@ -27,7 +27,7 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
                 
                 tempRow[col_key] = {value_key, value_label} 
                 
-                hashParts.push(`${value_key}`)
+                hashParts.push(`${col_key}:${value_key}`)
 
             })
             
@@ -41,7 +41,7 @@ export function hashVsNewData(dropdownColumns, columnContainingProductIDs, newDa
                 .map(eachId => eachId.trim()) 
                 .filter(id => id.length != 0)
             
-            let hash = hashParts.join('')
+            let hash = hashParts.join('::')
             
             tempRow[columnContainingProductIDs].forEach(pid => {
                 if(!(pid in pidVsHashes )){

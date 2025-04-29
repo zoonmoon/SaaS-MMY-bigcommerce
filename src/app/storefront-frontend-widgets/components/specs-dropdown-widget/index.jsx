@@ -77,9 +77,9 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
                 let specs = dropdownSpecsFetchedData.specsSettings
 
                 const urlParams = new URLSearchParams(window.location.search);
-            
+                
                 const fits = urlParams.get('ymm_specs');
-            
+
                 let initialSpecKeyVsValue = {}
 
                 if(fits !== null ){

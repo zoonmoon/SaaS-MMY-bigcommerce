@@ -94,7 +94,7 @@ export async function GET(request){
         }
 
         const query = { bool: { must } }
-        
+
         const aggs = {
             unique_key_values: {
               terms: {
@@ -109,8 +109,8 @@ export async function GET(request){
                 }
               }
             }
-          }
-
+        }
+        
         const response = await openSearchClient.search({
             index: 'specs_rows',
             body: {

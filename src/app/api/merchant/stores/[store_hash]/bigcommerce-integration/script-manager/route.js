@@ -21,7 +21,7 @@ export async function POST(request, {params}){
     try{    
         
         const {store_hash} = await params 
-
+        
         await buildAndSaveScriptInsidePublicFolder(store_hash) 
         // the above func throws error if issue occurs 
         

@@ -133,7 +133,7 @@ export  function  ScriptManager({storeData}){
                                 )
                             }
                             <div>
-                                <Button loading={managingYmmScript} onClick={addScript} sx={{minWidth:'150px'}} variant={'solid'}>Add YMM Script</Button>
+                                <Button loading={managingYmmScript} onClick={addScript}  variant={'solid'}>Add YMM Script</Button>
                             </div>
                         </>
                     ): (
@@ -146,13 +146,17 @@ export  function  ScriptManager({storeData}){
                                 <>
                                     {
                                         !managingYmmScript && (
-                                            <Alert severity={'success'}>
-                                                YMM Script has been added to the BigCommerce Script Manager
-                                            </Alert>
+                                            <>
+                                                <Alert severity={'success'}>
+                                                    YMM Script has been added to the Script Manager accessible at <i> storefront{' -> '}script manager</i> in BigCommerce admin
+                                                </Alert>                                                
+                                            </>
+
                                         )
                                     }
+                                    <Divider></Divider>
                                     <div>
-                                        <Button loading={managingYmmScript} style={{minWidth:'200px'}} variant={'solid'} onClick={updateScript}>Update Script</Button>
+                                        <Button loading={managingYmmScript}  variant={'solid'} onClick={updateScript}>Update Script</Button>
                                     </div>
                                 </>
                             )
@@ -163,8 +167,156 @@ export  function  ScriptManager({storeData}){
 }
 
 export function WidgetManager({storeData}){
+
+    const [widgetData, setWidgetData] = React.useState({widgetsThatShouldBeCreated: [], widgetsRemainingToBeCreated: [], allWidgetsCreated: []})
+    const [isLoading, setIsLoading] = React.useState(true)
+
+    async function fetchWidgetStaus(){
+        
+        try{
+            
+            setIsLoading(true) 
+
+            const response = await fetch(`/api/merchant/stores/${storeData.store_hash}/bigcommerce-integration/widget-manager`)
+
+            const responseJSON = await response.json() 
+
+            if(responseJSON.success !== true) throw new Error(responseJSON.message)
+
+            setWidgetData({
+                widgetsThatShouldBeCreated: responseJSON.widgetsThatShouldBeCreated,
+                widgetsRemainingToBeCreated: responseJSON.widgetsRemainingToBeCreated,
+                allWidgetsCreated: responseJSON.allWidgetsCreated
+            })
+
+        }catch(error){
+            
+            toast(error.message)
+            
+        }finally{
+        
+            setIsLoading(false) 
+        
+        }
+    }
+
+    React.useState(()=>{
+        fetchWidgetStaus()
+    }, [])
+
+    const [isButtonLoading, setIsButtonLoading] = React.useState(false) 
+
+    const handleCreateWidgets = async () => {
+        try{
+
+            setIsButtonLoading(true)
+
+            const response = await fetch(
+                `/api/merchant/stores/${storeData.store_hash}/bigcommerce-integration/widget-manager`,
+                {
+                    method: 'POST'
+                }
+            )
+
+            const responseJSON = await response.json() 
+
+            if(responseJSON.success !== true) throw new Error(responseJSON.message) 
+
+            toast("Widgets created successfully") 
+
+            fetchWidgetStaus()
+
+        }catch(error){
+            toast(error.message)
+        }finally{
+            setIsButtonLoading(false)
+        }
+    }
+
+    const handleDeleteWidgets = async () => {
+        try{
+
+            const confirmed = confirm("Are you sure you want to delete the YMM widgets?");
+            if (!confirmed){
+                toast('Deletion cancelled')
+                return
+            }
+
+            setIsButtonLoading(true)
+
+            const response = await fetch(
+                `/api/merchant/stores/${storeData.store_hash}/bigcommerce-integration/widget-manager`,
+                {
+                    method: 'DELETE'
+                }
+            )
+
+            const responseJSON = await response.json() 
+
+            if(responseJSON.success !== true) throw new Error(responseJSON.message) 
+
+            toast("Widgets deleted successfully") 
+
+            fetchWidgetStaus()
+
+        }catch(error){
+            toast(error.message)
+        }finally{
+            setIsButtonLoading(false)
+        }
+    }
+
+    if(isLoading) return(<LoadingSpinner />)
+
     return(
-        <>Widget Manager</>
+        <>
+            <Stack spacing={2}>
+                {
+                    ( 
+                        widgetData.widgetsRemainingToBeCreated.length > 0
+                    ) && (
+                        <>
+                            {
+                                widgetData.widgetsRemainingToBeCreated.map((widgetRemainingToBeCreated, index) => (
+                                    <Alert key={index} severity={'error'}>{widgetRemainingToBeCreated.name} has not been created</Alert>
+                                ))
+                            }
+                        </>
+                    )
+                }
+                {
+                    ( 
+                        widgetData.widgetsThatShouldBeCreated.length > 0 &&
+                        widgetData.widgetsRemainingToBeCreated.length ==  0
+                    ) && (
+                        <>
+                            <Alert severity={'success'}>All necessary widgets have been successfully created</Alert>
+                            <Alert severity={'info'}>The created widgets can be added to website from BigCommerce theme customizer / page builder</Alert>
+                        </>
+                    )
+                }
+                <Divider></Divider>
+                <Stack direction={'row'} spacing={3}>
+                    {
+                        ( 
+                            widgetData.widgetsRemainingToBeCreated.length > 0
+                        ) && (
+                            <Button loading={isButtonLoading} onClick={handleCreateWidgets}>Create Widgets</Button>
+                        )
+                    }
+                    {
+                        ( 
+                            widgetData.widgetsThatShouldBeCreated.length > 0 &&
+                            widgetData.allWidgetsCreated.some(
+                                widgetName => widgetData.widgetsThatShouldBeCreated.map(w => w.name).includes(widgetName) 
+                            )
+                        ) && (
+                            <Button loading={isButtonLoading} color={'danger'} onClick={handleDeleteWidgets}>Delete Widgets</Button>
+                        )
+                    }
+                </Stack>
+            </Stack>
+        </>
     )
 }
 
@@ -179,8 +331,8 @@ export function BigCommerceIntegration({storeData}){
                 tabContent: <ScriptManager storeData={storeData} />
             },
             {
-                label: "YMM Widget",
-                tabContent: <>Widget Manager</>
+                label: "YMM Widgets",
+                tabContent: <WidgetManager storeData={storeData}/>
             },
         ]
     }
@@ -195,10 +347,10 @@ export function BigCommerceIntegration({storeData}){
         <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <TabList textColor={'primary'}  onChange={handleChange} aria-label="lab API tabs example">
+                    <TabList  onChange={handleChange} aria-label="lab API tabs example">
                         {
                             tabData(storeData).map((tab, index) => (
-                                <Tab label={tab.label} value={index.toString()} />
+                                <Tab sx={{fontSize:'12px'}} label={tab.label} value={index.toString()} />
                             ))
                         }
                     </TabList>

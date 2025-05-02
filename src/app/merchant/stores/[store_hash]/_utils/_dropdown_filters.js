@@ -34,9 +34,16 @@ export  function DropdownFilters({storeData})  {
             {
                 spreadsheet_url == ''
                     ? (
-                        <Alert severity={'warning'}>
-                            Google Sheet URL has not been added.
-                        </Alert>
+                        <Stack spacing={2}>
+                            <Alert severity={'error'}>
+                                Google Sheet URL has not been added
+                            </Alert>
+                            <Alert severity={'info'}>
+                                The header columns in the google sheet will appear as dropdown filters
+                            </Alert>
+                            
+                        </Stack>
+
                     ): (
                         specs.length == 0
                             ? (

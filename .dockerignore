@@ -1,6 +1,9 @@
 **/.classpath
 **/.dockerignore
 **/.env
+**/docker-compose.yml
+**/.env.development
+**/.env.production
 **/.git
 **/.gitignore
 **/.project
@@ -22,3 +25,4 @@
 **/values.dev.yaml
 LICENSE
 README.md
+docker-compose.yml

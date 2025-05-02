@@ -14,9 +14,14 @@ spec:
     spec:
       containers:
         - name: nextjs
-          image: zoonmoon/ymm-bigcommerce-saas:latest
+          image: zoonmoon/saas-ymm-bigc:v2.4
           ports:
             - containerPort: 3000
           env:
             - name: NODE_ENV
               value: "production"
+          envFrom:
+            - configMapRef:
+                name: env-common
+            - configMapRef:
+                name: env-prod

@@ -70,25 +70,35 @@ export function FitmentDataSource({storeData}){
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Stack spacing={3} sx={{marginTop: 0}}>
                 {
-                    spreadsheet_url.trim().length == 0 ? (
+                    spreadsheet_url.trim().length == 0 && (
                         <Alert  severity={'info'}>
                             Please enter the google sheet URL.
                             Grant view access to everyone having a link.
                         </Alert>
-                    ): (
-                        <div>
-                            <Button loading={isSyncingFitmentSheet} variant={'outlined'} onClick={syncFitmentSheet}>Synchronize Fitment Sheet</Button>
-                        </div>
                     )
                 }
-                <Divider></Divider>
-                <Stack sx={{marginTop: 0, paddingTop: 0}} spacing={2}>
-                    <input type="hidden" name="doc_id" value={storeData.id} />
+                <Stack  spacing={2} sx={{marginTop: 0, paddingTop: 0}} >
+                    <input  type="hidden" name="doc_id" value={storeData.id} />
                     <TextField sx={{marginTop: '0px!important'}}  label="Google Sheet URL" name="spreadsheet_url" value={storeData.spreadsheet_url}   />
                     <div>
-                        <Button  loading={isLoading} type="submit" variant={'outlined'} >Update Fitment Sheet URL</Button>
+                        <Button  loading={isLoading || isSyncingFitmentSheet} type="submit" variant={'outlined'} >Update Fitment Sheet URL</Button>
                     </div>
                 </Stack>
+
+                {
+                    spreadsheet_url.trim().length > 0 && (
+                        <>
+                            <Divider></Divider>
+                            <Stack spacing={2}>
+                            <Alert severity={'info'}>If you have recently updated google sheet, click the button below so that the sheet changes take effect instantly in the website dropdown filter</Alert>
+                            <Alert severity={'info'}>The fitment sheet is automatically re-indexed one time in 24 hours interval</Alert>
+                            <div>
+                                    <Button loading={isSyncingFitmentSheet || isLoading} variant={'outlined'} onClick={syncFitmentSheet}>Synchronize Fitment Sheet</Button>
+                                </div>
+                            </Stack>
+                        </>
+                    )
+                }
 
             </Stack>
 

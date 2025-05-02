@@ -1,12 +1,13 @@
-version: '3.4'
-
 services:
-  ymmbigcommercesaas:
-    image: ymmbigcommercesaas
+  web:
     build:
       context: .
       dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
+    image: zoonmoon/saas-ymm-bigc:v2.2
+    env_file: 
+    - path: ".env" 
+      required: true
+    - path: ".env.production"
+      required: true
     ports:
       - 3000:3000

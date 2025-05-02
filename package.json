@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -31,11 +31,11 @@
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "vite": "^6.3.3",
+    "@vitejs/plugin-react": "^4.4.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
-    "cross-env": "^7.0.3",
-    "vite": "^6.3.3"
+    "cross-env": "^7.0.3"
   }
 }

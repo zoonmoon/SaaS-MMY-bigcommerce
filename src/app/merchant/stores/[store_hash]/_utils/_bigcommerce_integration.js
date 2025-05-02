@@ -350,7 +350,7 @@ export function BigCommerceIntegration({storeData}){
                     <TabList  onChange={handleChange} aria-label="lab API tabs example">
                         {
                             tabData(storeData).map((tab, index) => (
-                                <Tab sx={{fontSize:'12px'}} label={tab.label} value={index.toString()} />
+                                <Tab label={tab.label} value={index.toString()} />
                             ))
                         }
                     </TabList>

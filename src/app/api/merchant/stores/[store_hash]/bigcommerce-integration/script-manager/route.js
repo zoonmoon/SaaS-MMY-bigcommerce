@@ -11,13 +11,12 @@ async function fileExists(url) {
       return false;
     }
 }
-  
+
 export async function POST(request, {params}){
 
     // build script for this store
     // save the built script inside public folder
     // upload the link to that script to the script manager in BigCommerce
-
     try{    
         
         const {store_hash} = await params 
@@ -25,6 +24,8 @@ export async function POST(request, {params}){
         await buildAndSaveScriptInsidePublicFolder(store_hash) 
         // the above func throws error if issue occurs 
         
+
+        console.log("public url: ", process.env.NEXT_PUBLIC_API_URL)
         // script url 
         let ymmScriptURL = `${process.env.NEXT_PUBLIC_API_URL}/${process.env.YMM_SCRIPTS_FOLDER}/${store_hash}.js`
         

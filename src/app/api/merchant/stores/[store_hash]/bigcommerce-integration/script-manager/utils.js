@@ -10,6 +10,10 @@ export default async function buildAndSaveScriptInsidePublicFolder(storeHash) {
         // note double sets of  dashes "--" below
         const { stdout, stderr } = await execPromise(`npx vite build --  --store_hash=${storeHash}`, {
             cwd: process.cwd(),
+            env: {
+                ...process.env,
+                NODE_ENV: 'production'
+            }
         });
 
         // the output directory is defined in the vite config file - vite.config.js

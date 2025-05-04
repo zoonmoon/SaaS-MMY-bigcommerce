@@ -11,7 +11,7 @@ export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEX
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
   const callBack = (selectedSpecs) => {
-    window.location.href = '/storefront-frontend-widgets/search_page?ymm_specs="'+selectedSpecs+'"';  //
+    window.location.href = '/search.php?ymm_specs="'+selectedSpecs+'"';  //
   };
 
   const [isDropdownWidgetsOpen, setIsDropdownWidgetsOpen] = useState(false) 

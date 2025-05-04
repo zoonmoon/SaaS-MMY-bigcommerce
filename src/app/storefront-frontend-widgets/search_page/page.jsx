@@ -115,10 +115,10 @@ export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEX
                   /> 
                 ): (
                   <div style={{display:'flex', alignItems:'center', gap:'20px', flexWrap:'wrap'}}>
-                    <h2>
+                    <div className="selected-specs">
                       {selectedSpecsDetailedInfo}
-                    </h2>
-                    <a style={{color:'unset'}} onClick={handleDropdownWidgetViewToggle} href='#'>Change Selection</a>
+                    </div>
+                    <a className="change-link" style={{color:'unset'}} onClick={handleDropdownWidgetViewToggle} href='#'>Change Selection</a>
                   </div>
                 )
               }

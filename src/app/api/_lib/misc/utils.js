@@ -10,9 +10,8 @@ export const sanitizeString = (input) => input
 
 export function LoadingSpinner({minHeight = '100px'}) {
   return (
-    <Box sx={{ display: 'flex', background:'white', justifyContent: 'center', alignItems: 'center', minHeight }}>
+    <Box sx={{ display: 'flex',  justifyContent: 'center', alignItems: 'center', minHeight }}>
       <CircularProgress />
     </Box>
   );
 }
-

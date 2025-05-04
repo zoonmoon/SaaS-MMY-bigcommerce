@@ -1,42 +1,17 @@
+
 import React from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
-export default function FrontendLoadingSpinner() {
-  const overlayStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // semi-transparent white
-    backgroundOpacity: 0.5,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 9999,
-  };
+export const sanitizeString = (input) => input
+.replace(/\s+/g, '-')        // replace spaces with dashes
+.replace(/[^a-zA-Z0-9-]/g, '') // remove everything except alphanumerics and dashes
+// .toLowerCase();                  // Convert to lowercase
 
-  const spinnerStyle = {
-    width: '60px',
-    height: '60px',
-    border: '6px solid black',              // Black outer border
-    borderTop: '6px solid transparent',     // Transparent top border for spinning effect
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-  };
-
-  const keyframes = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-
+export function LoadingSpinner({minHeight = '100px'}) {
   return (
-    <>
-      <style>{keyframes}</style>
-      <div style={overlayStyle}>
-        <div style={spinnerStyle}></div>
-      </div>
-    </>
+    <Box sx={{ display: 'flex',  justifyContent: 'center', alignItems: 'center', minHeight }}>
+      <CircularProgress />
+    </Box>
   );
 }

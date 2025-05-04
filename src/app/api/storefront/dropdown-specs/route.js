@@ -19,7 +19,7 @@ export async function GET(request){
         const url = new URL(request.url)
         
         const selectedSpecsInfo = url.searchParams.get("selected_specs_info")
-      
+        
         const storeHash = url.searchParams.get("store_hash") 
 
         if(!storeHash || storeHash == null || storeHash == undefined || storeHash == '' )

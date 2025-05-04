@@ -1,6 +1,7 @@
 import Button from '@mui/joy/Button';
 import { useEffect, useState, useRef } from "react";
 import {  FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import Cookies from 'js-cookie';
 
 export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission, listingPage = false}){
 
@@ -14,18 +15,25 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
     const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true)
 
     const [isSubmitButtonLoading, setIsSubmitButtonLoading]= useState(false) 
-
-    const [isDropdownSpecChangedByUserAction, setIsDropdownSpecChangedByUserAction] = useState(false)
     
-    function returnSelectedInfo(specToFetch){
+    const returnYMMspecsFromURL = () => {
+        const urlParams = new URLSearchParams(window.location.search); 
+        let fits = urlParams.get('ymm_specs');
+        return fits
+    }
+
+    function returnSelectedInfo(specToFetch, presentState){
         
         let selectedInfo = [];
         
+        let presentStateTemp  = {...presentState}
+
+        console.log("presentStateTemp",  presentStateTemp)
         // if the order is make engine year model
         // if we are fetching year, then only the make and engine should be used to fetch the year options
         // similary to fetch engine, we need to pass the value of only the make 
         // ie.e to fetch (n)th term, pass the vlaues from 1 to (n-1)th term
-        Object.values(dropdownSpecs).filter(spec => spec.sortOrder < dropdownSpecs[specToFetch].sortOrder).forEach(spec => {
+        Object.values(presentStateTemp).filter(spec => spec.sortOrder < presentStateTemp[specToFetch].sortOrder).forEach(spec => {
             if(spec.selectedValue != '')
                 selectedInfo.push(`${spec.specKey}:${spec.selectedValue}`)     
         }) 
@@ -34,12 +42,12 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
 
     }
 
-    function returnQueryParamsString(specToFetch){
+    function returnQueryParamsString(specToFetch, presentState){
         
         const queryParams = []
         
         queryParams.push(`store_hash=${storeHash}`)
-        queryParams.push(`selected_specs_info=${returnSelectedInfo(specToFetch)}`)
+        queryParams.push(`selected_specs_info=${returnSelectedInfo(specToFetch, presentState)}`)
         queryParams.push(`spec_to_fetch=${specToFetch}`) // based on 
         queryParams.push(`is_listing_page=${listingPage}`) // based on 
         
@@ -49,87 +57,67 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
 
     const isFetchingRef = useRef(false); // need to leverage useRef instead of useState in this case 
     
-    async function fetchDropdownSpecs(specToFetch = ''){
+    function processFetchedData(dropdownSpecsExistingTemp, dropdownSpecsFetchedData){
 
+        if(dropdownSpecsFetchedData.responseContainsValidSpecsSettings === true ){
+
+            // dropdownSpecs is not yet set
+            // because responseContainsValidSpecsSettings = true, which happens only in first request
+            // so populate dropdownSpecs state first
+
+            let specs = dropdownSpecsFetchedData.specsSettings
+
+            specs.forEach(spec => {
+
+                let {key: specKey,  label: specLabel, sort_order: sortOrder} = spec 
+
+                let selectedValue = ''
+
+                // if (initialSpecKeyVsValue.hasOwnProperty(specKey)) {
+                //     selectedValue = initialSpecKeyVsValue[specKey];
+                // }
+
+                dropdownSpecsExistingTemp[specKey] = {
+                    specKey, 
+                    specLabel,  
+                    sortOrder, // the order in which the dropdowns are displayed, starts from 1
+                    selectedValue, // dropdown selected value
+                    options: [], // dropdown options 
+                    isLoading: false // true only when loading entries for this spec 
+                }
+
+            })
+
+        }
+
+        if(dropdownSpecsExistingTemp.hasOwnProperty(dropdownSpecsFetchedData.dropdownData.spec)){
+            dropdownSpecsExistingTemp[dropdownSpecsFetchedData.dropdownData.spec].options = dropdownSpecsFetchedData.dropdownData.entries
+            dropdownSpecsExistingTemp[dropdownSpecsFetchedData.dropdownData.spec].isLoading = false // as it has been just loaded
+        }
+
+        return dropdownSpecsExistingTemp
+
+    }
+
+    async function fetchDropdownSpecs(dropdownSpecsExistingTemp = {}, specToFetch = ''){
+        
+        let dropdownSpecsExistingTemp2 = {...dropdownSpecsExistingTemp}
+        
         if (isFetchingRef.current) return; // 🔒 Guard: fully reliable
         
         isFetchingRef.current = true;      // 🔒 Immediately locks further calls        
 
         try{
 
-            let finalEndpoint = `${endpoint}?${returnQueryParamsString(specToFetch)}`
+            let finalEndpoint = `${endpoint}?${returnQueryParamsString(specToFetch, dropdownSpecsExistingTemp2)}`
         
             const response  = await fetch(finalEndpoint) 
 
             const  dropdownSpecsFetchedData = await response.json() 
-
-            setIsDropdownSpecChangedByUserAction(false) // allow to refetch data when user changes the dropdown state
-
-            let dropdownSpecsExistingTemp = { ...dropdownSpecs };
             
+            const newState = processFetchedData(dropdownSpecsExistingTemp2, dropdownSpecsFetchedData) 
 
-            if(dropdownSpecsFetchedData.responseContainsValidSpecsSettings === true ){
-
-                // dropdownSpecs is not yet set
-                // because responseContainsValidSpecsSettings = true, which happens only in first request
-                // so populate dropdownSpecs state first
-
-                let specs = dropdownSpecsFetchedData.specsSettings
-
-                const urlParams = new URLSearchParams(window.location.search);
-                
-                const fits = urlParams.get('ymm_specs');
-
-                let initialSpecKeyVsValue = {}
-
-                if(fits !== null ){
-                    
-                    setDropdownsAutoFetchedCompleted(false)
-
-                    const initialSpecsValues = fits.split('::') 
-                    // fits = spec1:value1::spec2:value2 
-                    // ie year:2019::make:ford 
-                    // should ge in sorted order
-
-                    initialSpecsValues.forEach(spec => {
-                        const [specKey, specValue] = spec.split(':')
-                        initialSpecKeyVsValue[specKey]  = specValue
-                    })
-
-                }
-
-                specs.forEach(spec => {
-
-
-                    let {key: specKey,  label: specLabel, sort_order: sortOrder} = spec 
-
-                    let selectedValue = ''
-
-                    if (initialSpecKeyVsValue.hasOwnProperty(specKey)) {
-                        selectedValue = initialSpecKeyVsValue[specKey];
-                    }
-
-                    dropdownSpecsExistingTemp[specKey] = {
-                        specKey, 
-                        specLabel,  
-                        sortOrder, // the order in which the dropdowns are displayed, starts from 1
-                        selectedValue, // dropdown selected value
-                        options: [], // dropdown options 
-                        isLoading: false // true only when loading entries for this spec 
-                    }
-
-                })
-
-            }
-
-            if(dropdownSpecsExistingTemp.hasOwnProperty(dropdownSpecsFetchedData.dropdownData.spec)){
-                dropdownSpecsExistingTemp[dropdownSpecsFetchedData.dropdownData.spec].options = dropdownSpecsFetchedData.dropdownData.entries
-                dropdownSpecsExistingTemp[dropdownSpecsFetchedData.dropdownData.spec].isLoading = false // as it has been just loaded
-            }
-
-
-
-            setDropdownSpecs(dropdownSpecsExistingTemp)
+            return newState
 
         }catch(error){
 
@@ -143,94 +131,54 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
 
     }
 
+    async function initialize(){
+        
+        if(isDropdownSpecsSetFromCookie()) return 
 
-    useEffect(() => {
+        let presentState = await fetchDropdownSpecs() 
+        // this state consists only the starting years
 
-        setIsSubmitButtonDisabled( isFetchingRef.current ||  Object.values(dropdownSpecs).some(spec => spec.selectedValue == '' || spec.options.length == 0 ))
+        let fits = returnYMMspecsFromURL()
 
-        if(!dropdownsAutoFetchCompleted){
+        if(fits == null ){
+            setDropdownSpecs(presentState) 
+            return 
+        } 
 
-            // this listens for change in the dropdown specs
-            // but action will be taken only once after dropdownSpecs if first changed. 
-            // isLoading condition added to avoid multiple fetches of the same option 
-            // because dropdownSpecs object spec also changes witin the fetchDropdownSpecs function 
-            Object.values(dropdownSpecs).forEach(spec => {
+        fits = fits.replaceAll('"', '')
+        
+        let splittedFits  = fits.split('::') 
 
-                if(
-                    spec.selectedValue != ''  &&
-                    spec.options.length == 0 // && 
-                    // spec.isLoading == false  && 
-                    // Object.values(dropdownSpecs)
-                    //     .filter(spec2 => spec2.sortOrder < dropdownSpecs[spec.specKey].sortOrder)
-                    //         .every(spec3 => spec3.options.length > 0 ) // make sure every previous dropdown is has been fetched
-                ){
-                    // this was auto filled
-                    // So, fetch this 
-                    fetchDropdownSpecs(spec.specKey) 
-
-                } 
-
-            })
-
-            if(Object.values(dropdownSpecs).every(spec => spec.selectedValue !== '' && spec.options.length > 0)){
-                setDropdownsAutoFetchedCompleted(true) 
-            }
-
+        for(var i =0 ;i<splittedFits.length; i++ ){
+            
+            let [specKey, specValue] = splittedFits[i].split(':') 
+            
+            let newState = await processDropdownChanges(specValue, specKey, presentState) 
+            
+            if(newState !== false )
+                presentState = newState
+            
         }
 
+        setDropdownSpecs(presentState) 
 
+    }
+
+    useEffect(() => {
+        setIsSubmitButtonDisabled( 
+            isFetchingRef.current ||   
+            Object.values(dropdownSpecs).some(spec => spec.selectedValue == '' || spec.options.length == 0 ) || 
+            Object.values(dropdownSpecs).length == 0 
+        )
     }, [dropdownSpecs])
 
+    useEffect(()=>{
+        initialize()
+    }, [])
 
-    useEffect(() => {
-        
-        // fetch dropdown info
-        // when initilizaing i.e. dropdownspecs has 0 keys
-        // or when the dropdownspecs changes because of user action and not because of setting after fetching value from server
-        // when isDropdownSpecChangedByUserAction = false, do not refetch - cause this useEffect runs
-        // even when isDropdownSpecChangedByUserAction is false
+    const processDropdownChanges = async (newValue, specKey, presentState) => {
 
-        if(Object.keys(dropdownSpecs).length === 0){
-
-           fetchDropdownSpecs()
-
-        }else if( isDropdownSpecChangedByUserAction ){
-            
-            // find the spec with minimum sort order and selectedValue = ''
-
-            const specsEmptySelectedValue = Object.values(dropdownSpecs)
-                .filter(spec => spec.selectedValue === '')  // Only include specs where selectedValue is ''
-                
-            if(specsEmptySelectedValue.length > 0){
-
-                const specWithMinSortOrderAndEmptySelectedValue = specsEmptySelectedValue            
-                    .reduce((spec1, spec2) => spec2.sortOrder < spec1.sortOrder ? spec2 : spec1)
-                
-                var specToFetch =  specWithMinSortOrderAndEmptySelectedValue.specKey;
-
-                fetchDropdownSpecs(specToFetch)
-
-            }else{
-
-                // all dropdowns have been selected
-                // so redirect to the correct listing page
-
-                setIsDropdownSpecChangedByUserAction(false) 
-                // this variable was reset only after fetching new data
-                // since we are not fetching new data this time, we need to reset this variable here
-                // so that further changes are triggered and listened to 
-
-            }
-
-        }
-        
-    }, [isDropdownSpecChangedByUserAction])    
-
-    const handleDropdownChange = ( newValue, specKey) => {
-
-        if(newValue == null || newValue == '' ) return // avoid re-fetch when user clicks X icon inside autocomplete text field
-
-        let dropdownSpecsExistingTemp = { ...dropdownSpecs };
+        let dropdownSpecsExistingTemp = {...presentState}
 
         if(newValue != null )
             dropdownSpecsExistingTemp[specKey].selectedValue = newValue
@@ -255,15 +203,77 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
         
         setDropdownSpecs(dropdownSpecsExistingTemp)
 
-        setIsDropdownSpecChangedByUserAction(true) 
+        const specsEmptySelectedValue = Object.values(dropdownSpecsExistingTemp)
+        .filter(spec => spec.selectedValue === '')  // Only include specs where selectedValue is ''
+        
+        if(specsEmptySelectedValue.length > 0){
+
+            const specWithMinSortOrderAndEmptySelectedValue = specsEmptySelectedValue            
+                .reduce((spec1, spec2) => spec2.sortOrder < spec1.sortOrder ? spec2 : spec1)
+            
+            var specToFetch =  specWithMinSortOrderAndEmptySelectedValue.specKey;
+
+            let newState = await  fetchDropdownSpecs(dropdownSpecsExistingTemp, specToFetch)
+
+            return newState
+
+        }
+
+        return false 
 
     }
 
-    const handleSubmission = () => {
+    const handleDropdownChange = async ( newValue, specKey) => {
+
+        if(newValue == null || newValue == '' ) return // avoid re-fetch when user clicks X icon inside autocomplete text field
+
+        let dropdownSpecsExistingTemp = { ...dropdownSpecs };
+
+        const newState = await processDropdownChanges(newValue, specKey, dropdownSpecsExistingTemp)
+
+        if(newState !== false )
+            setDropdownSpecs(newState)
+
+    }
+
+    const handleSubmission = () => {        
         setIsSubmitButtonLoading(true)
-        console.log(Object.values(dropdownSpecs))
-        callbackToSubmission(Object.values(dropdownSpecs).map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::'))
+        let selectedValues = Object.values(dropdownSpecs)
+            .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
+            .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
+        Cookies.set('ymm_specs', JSON.stringify(dropdownSpecs), { expires: 7 });
+        callbackToSubmission(selectedValues)
     }
+
+    const isDropdownSpecsSetFromCookie = () => {
+
+        let fits = returnYMMspecsFromURL()
+        const selectedSpecs = Cookies.get('ymm_specs') 
+        if(fits == null &&  selectedSpecs) {
+            setDropdownSpecs(JSON.parse(selectedSpecs))
+            return true 
+        }  
+
+
+        if(fits != null && selectedSpecs ){
+        
+            fits = fits.replaceAll('"', '')
+            
+            let selectedValues = Object.values(JSON.parse(selectedSpecs))
+                .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
+                .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
+
+            if(fits.replaceAll('"', '') == selectedValues ){
+                setDropdownSpecs(JSON.parse(selectedSpecs))
+                return true 
+            }
+
+        }
+        
+        return false 
+
+    }
+
 
     return(
         <div 

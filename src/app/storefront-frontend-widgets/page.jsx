@@ -2,8 +2,8 @@
 
 import { SpecsDropdownWidget } from "./components/specs-dropdown-widget";
 
-function SpecsDropdownWidgetInline(){
-
+function HomePageSpecsDropdownWidget(){
+  
   const callBack = (selectedSpecs) => {
     window.location.href = '/storefront-frontend-widgets/search_page?ymm_specs="'+selectedSpecs+'"';  //
   };
@@ -23,4 +23,4 @@ function SpecsDropdownWidgetInline(){
   ) 
 }
 
-export default SpecsDropdownWidgetInline;
+export default HomePageSpecsDropdownWidget;

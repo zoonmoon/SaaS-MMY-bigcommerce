@@ -7,7 +7,6 @@ export function GeneralInfo ({storeData}){
         fetch(`/api/merchant/stores/${storeData.store_hash}/indexing/product-catalog`)
     }
     
-
     return(
         <div>
             <Stack spacing={2}>

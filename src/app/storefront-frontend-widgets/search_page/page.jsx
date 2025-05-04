@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
-import Link from "next/link";
 
 export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEXT_PUBLIC_STORE_HASH}){
 
@@ -120,7 +119,7 @@ export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEX
                     <h2>
                       {selectedSpecsDetailedInfo}
                     </h2>
-                    <Link style={{color:'unset'}} onClick={handleDropdownWidgetViewToggle} href='#'>Change Selection</Link>
+                    <a style={{color:'unset'}} onClick={handleDropdownWidgetViewToggle} href='#'>Change Selection</a>
                   </div>
                 )
               }

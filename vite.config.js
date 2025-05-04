@@ -16,6 +16,7 @@ if (!storeHash) {
 
 export default defineConfig({
   define: {
+    'process.env.__NEXT_ROUTER_BASEPATH': '/',
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.NEXT_PUBLIC_STORE_HASH': JSON.stringify(storeHash),
     'process.env.NEXT_PUBLIC_API_URL': JSON.stringify(process.env.NEXT_PUBLIC_API_URL), // use production url

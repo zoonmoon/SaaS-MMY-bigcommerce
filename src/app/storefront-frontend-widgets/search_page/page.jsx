@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { SpecsDropdownWidget } from "../components/specs-dropdown-widget";
 import toast from "react-hot-toast";
-
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
 

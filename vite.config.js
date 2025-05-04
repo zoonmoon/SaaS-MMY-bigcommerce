@@ -20,19 +20,13 @@ export default defineConfig({
     'process.env.NEXT_PUBLIC_STORE_HASH': JSON.stringify(storeHash),
     'process.env.NEXT_PUBLIC_API_URL': JSON.stringify(process.env.NEXT_PUBLIC_API_URL), // use production url
   },
-  plugins: [react({ jsxRuntime: 'automatic' })],
+  plugins: [react({ jsxRuntime : 'automatic' })],
   build: {
     lib: {
       entry: 'src/app/_expose-to-js/index.jsx',
       name: 'YmmSelectorWidget',
       fileName: () => `${storeHash}.js`,
       formats: ['iife'], // Immediately Invoked Function Expression (global usage)
-    },
-    rollupOptions: {
-        input: path.resolve(__dirname, 'src/app/_expose-to-js/index.jsx'), // 👈 specify only your entry file
-        output: {
-          assetFileNames: () => '', // 👈 prevent emitting CSS or asset files
-        },
     },
     outDir: `./public/${process.env.YMM_SCRIPTS_FOLDER}`,
     copyPublicDir:false

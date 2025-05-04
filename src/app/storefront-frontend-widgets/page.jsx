@@ -5,7 +5,7 @@ import { SpecsDropdownWidget } from "./components/specs-dropdown-widget";
 function HomePageSpecsDropdownWidget(){
   
   const callBack = (selectedSpecs) => {
-    window.location.href = '/search.php?ymm_specs="'+selectedSpecs+'"';  //
+    window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
   };
   
   console.log("ENV URL from componenet:", process.env.NEXT_PUBLIC_API_URL);

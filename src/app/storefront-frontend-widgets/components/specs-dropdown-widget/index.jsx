@@ -292,10 +292,10 @@ export function SpecsDropdownWidget(
 
 
     return(
-        <div className={classes}>
+        <div className={classes} style={{paddingTop:'20px', paddingBottom:'20px'}}>
             {
                 widgetHeading.trim().length > 0 && (
-                    <div style={{fontSize:headingFontSize+'px'}}>
+                    <div className='widget-heading' style={{fontSize:headingFontSize+'px', marginBottom:'10px'}}>
                         {widgetHeading}
                     </div>
                 )

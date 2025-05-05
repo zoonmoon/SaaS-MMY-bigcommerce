@@ -18,7 +18,6 @@ function HomePageSpecsDropdownWidget(
     window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
   };
   
-  console.log("ENV URL from componenet:", process.env.NEXT_PUBLIC_API_URL);
   
   return(
     <div

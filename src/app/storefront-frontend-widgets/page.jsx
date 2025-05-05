@@ -2,16 +2,7 @@
 
 import { SpecsDropdownWidget } from "./components/specs-dropdown-widget";
 
-function HomePageSpecsDropdownWidget(
-  {
-    widgetProps: {
-      classes='', 
-      widgetHeading='', 
-      submitButtonText='Go', 
-      submitButtonBackgroundColor='#000000', 
-      headingFontSize='14'
-    }
-  }
+function HomePageSpecsDropdownWidget({widgetProps = {}}
 ){
   
   const callBack = (selectedSpecs) => {

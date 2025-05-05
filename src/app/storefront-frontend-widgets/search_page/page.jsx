@@ -6,17 +6,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
 
-export default function SpecsDropdownWidgetSearchPage(
-  {
-    widgetProps: {
-      classes='', 
-      widgetHeading='', 
-      submitButtonText='Go', 
-      submitButtonBackgroundColor='#000000', 
-      headingFontSize='14'
-    }
-  }
-){
+export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
 
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 

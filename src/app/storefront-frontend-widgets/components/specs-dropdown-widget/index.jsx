@@ -3,24 +3,23 @@ import { useEffect, useState, useRef } from "react";
 import {  FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Cookies from 'js-cookie';
 
-
-
 export function SpecsDropdownWidget(
     { 
         endpoint, 
         storeHash, 
         callbackToSubmission, 
         listingPage = false, 
-        widgetProps: {
-            classes, 
-            widgetHeading, 
-            submitButtonText, 
-            submitButtonBackgroundColor, 
-            headingFontSize
-        }
+        widgetProps
     }
 ){
-
+    const {
+        classes = '',
+        widgetHeading = '',
+        submitButtonText = 'Go',
+        submitButtonBackgroundColor = '#000000',
+        headingFontSize = '14'
+      } = widgetProps;
+    
 
     const [dropdownsAutoFetchCompleted, setDropdownsAutoFetchedCompleted] = useState(true)  
     // when user redirected to page B from Page A after submitting this form

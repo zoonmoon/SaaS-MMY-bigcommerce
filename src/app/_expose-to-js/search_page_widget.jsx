@@ -1,7 +1,7 @@
 
 import ReactDOM from "react-dom/client";
 import SpecsDropdownWidgetSearchPage from "../storefront-frontend-widgets/search_page/page";
-
+import { returnWidgetProps } from "./utils";
 // Replace this function name if needed
 export function renderSearchPageYmmWidget() {
 

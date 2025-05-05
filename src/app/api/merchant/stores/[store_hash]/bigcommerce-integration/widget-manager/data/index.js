@@ -8,9 +8,9 @@ export function returnTemplate(id, classes = '', title = '',  submitButtonText='
     // if(submitButtonText.trim().length == 0 )submitButtonText = "Go"
 
     // if(classes.trim().length == 0) classes = 'container'
-
+    
     return `<div    
-            class="widget-info-div-zoon" 
+            class="widget-info-div-zoon${classes.trim().length > 0 ? ' '+classes: ''}" 
             data-title="${title}" 
             data-classes="${classes}"
             data-submit-button-text="${submitButtonText}"

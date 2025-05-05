@@ -8,6 +8,8 @@ import { LoadingSpinner } from "../components/loading-spinner";
 
 export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
 
+  const { headingFontSize = '14'} = widgetProps;
+
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
   const callBack = (selectedSpecs) => {
@@ -56,7 +58,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
     
     if(fits == null ){
       setIsLoadingHashVsDetails(false)
-      isDropdownWidgetsOpen(true) 
+      setIsDropdownWidgetsOpen(true) 
       return 
     }
 
@@ -116,7 +118,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
                   /> 
                 ): (
                   <div style={{display:'flex', alignItems:'center', gap:'20px', flexWrap:'wrap'}}>
-                    <div className="selected-specs">
+                    <div className="selected-specs" style={{fontSize:headingFontSize+'px'}}>
                       {selectedSpecsDetailedInfo}
                     </div>
                     <a className="change-link" style={{color:'unset'}} onClick={handleDropdownWidgetViewToggle} href='#'>Change Selection</a>

@@ -1,7 +1,6 @@
 'use client'
 
 import { SpecsDropdownWidget } from "./components/specs-dropdown-widget";
-import { widgetProps } from "./components/specs-dropdown-widget";
 
 function HomePageSpecsDropdownWidget({widgetProps}){
   

@@ -6,7 +6,17 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
 
-export default function SpecsDropdownWidgetSearchPage({widgetProps,storeHash=process.env.NEXT_PUBLIC_STORE_HASH}){
+export default function SpecsDropdownWidgetSearchPage(
+  {
+    widgetProps: {
+      classes='', 
+      widgetHeading='', 
+      submitButtonText='Go', 
+      submitButtonBackgroundColor='#000000', 
+      headingFontSize='14'
+    }
+  }
+){
 
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
@@ -111,7 +121,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps,storeHash=pro
                   <SpecsDropdownWidget 
                     endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
                     callbackToSubmission={callBack}
-                    storeHash={storeHash}
+                    storeHash={process.env.NEXT_PUBLIC_STORE_HASH}
                     widgetProps={widgetProps}
                   /> 
                 ): (

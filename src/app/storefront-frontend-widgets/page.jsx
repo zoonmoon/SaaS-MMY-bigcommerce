@@ -2,7 +2,17 @@
 
 import { SpecsDropdownWidget } from "./components/specs-dropdown-widget";
 
-function HomePageSpecsDropdownWidget({widgetProps}){
+function HomePageSpecsDropdownWidget(
+  {
+    widgetProps: {
+      classes='', 
+      widgetHeading='', 
+      submitButtonText='Go', 
+      submitButtonBackgroundColor='#000000', 
+      headingFontSize='14'
+    }
+  }
+){
   
   const callBack = (selectedSpecs) => {
     window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //

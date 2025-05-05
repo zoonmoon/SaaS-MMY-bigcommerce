@@ -5,7 +5,21 @@ import Cookies from 'js-cookie';
 
 
 
-export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission, listingPage = false, widgetProps: {classes, widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize}}){
+export function SpecsDropdownWidget(
+    { 
+        endpoint, 
+        storeHash, 
+        callbackToSubmission, 
+        listingPage = false, 
+        widgetProps: {
+            classes, 
+            widgetHeading, 
+            submitButtonText, 
+            submitButtonBackgroundColor, 
+            headingFontSize
+        }
+    }
+){
 
 
     const [dropdownsAutoFetchCompleted, setDropdownsAutoFetchedCompleted] = useState(true)  

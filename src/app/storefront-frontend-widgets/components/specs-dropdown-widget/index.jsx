@@ -3,7 +3,23 @@ import { useEffect, useState, useRef } from "react";
 import {  FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Cookies from 'js-cookie';
 
-export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission, listingPage = false}){
+function widgetProps(elemID){
+    const divWithWidgetAttribs = document.getElementById(elemID).closest('.widget-info-div-zoon') 
+    const firstDiv = divWithWidgetAttribs
+    const classes = firstDiv ? firstDiv.getAttribute('data-classes') : '';
+    const widgetHeading = firstDiv ? firstDiv.getAttribute('data-title') : '';
+    const submitButtonText = firstDiv ? firstDiv.getAttribute('data-submit-button-text') : '';
+    const submitButtonBackgroundColor = firstDiv ? firstDiv.getAttribute('data-submit-button-bg-color') : '';
+    let headingFontSize = firstDiv ? firstDiv.getAttribute('data-heading-font-size') : '';
+    if( headingFontSize.trim().length == 0 ) headingFontSize = 16
+    if(submitButtonBackgroundColor.trim().length == 0 ) submitButtonBackgroundColor = '#000000'
+    if(submitButtonText.trim().length == 0) submitButtonText = 'Go'
+    return {classes, widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize}
+}
+
+export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission, listingPage = false, dataID=""}){
+
+    let {classes, widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize} = widgetProps()
 
     const [dropdownsAutoFetchCompleted, setDropdownsAutoFetchedCompleted] = useState(true)  
     // when user redirected to page B from Page A after submitting this form
@@ -276,66 +292,76 @@ export function SpecsDropdownWidget({ endpoint, storeHash, callbackToSubmission,
 
 
     return(
-        <div 
-            className="dropdowns-container"
-            style={{
-                display:'flex',
-                flexWrap:'wrap',
-                gap: '10px'
-            }}
-        >
+        <div className={classes}>
             {
-                Object.values(dropdownSpecs)
-                
-                .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
-
-                .map(({specKey, specLabel,selectedValue,options,isLoading}, index) => {
-
-                    // if(isLoading){
-                    //     return(
-                    //         <div key={index}>
-                    //             Loading
-                    //         </div>
-                    //     )
-                    // }
-                    
-                    if(options.length == 0) selectedValue = ''
-
-                    // Check if all items satisfy the condition
-                    const allValid = options.every(option => !isNaN(option.value) && option.value !== null && option.value !== undefined);
-
-                    // If all values are valid, sort and replace the original options
-                    if (allValid) {
-                        const sortedOptions = options
-                            .map(option => ({
-                                ...option,
-                                value: Number(option.value)  // Convert value to number for sorting
-                            }))
-                            .sort((a, b) => b.value - a.value);
-
-                        // Replace the original options
-                        options.length = 0; // Clear the original options array
-                        options.push(...sortedOptions); // Add the sorted options back to the original array
-                    }
-
-                    return(
-                        <FormControl  key={index} sx={{flexGrow:1, minWidth:'200px'}}>
-                            <InputLabel>{isLoading ? 'Loading': specLabel}</InputLabel>
-                            <Select
-                                onChange={(event) => handleDropdownChange(event.target.value, specKey)}
-                                label={isLoading ? 'Loading' : specLabel}
-                                disabled={options.length == 0}
-                                value={selectedValue}
-                            >
-                                {
-                                    options.map(({value, label}, index) => <MenuItem key={index} value={value}>{label}</MenuItem> )
-                                }
-                            </Select>
-                        </FormControl>
-                    )
-                })
+                widgetHeading.trim().length > 0 && (
+                    <div style={{fontSize:headingFontSize+'px'}}>
+                        {widgetHeading}
+                    </div>
+                )
             }
-            <Button loading={isSubmitButtonLoading} sx={{minWidth:'150px'}} variant={'solid'} disabled={isSubmitButtonDisabled } onClick={handleSubmission}>Search</Button>
+            <div 
+                className="dropdowns-container"
+                style={{
+                    display:'flex',
+                    flexWrap:'wrap',
+                    gap: '10px'
+                }}
+            >
+                {
+                    Object.values(dropdownSpecs)
+                    
+                    .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
+
+                    .map(({specKey, specLabel,selectedValue,options,isLoading}, index) => {
+
+                        // if(isLoading){
+                        //     return(
+                        //         <div key={index}>
+                        //             Loading
+                        //         </div>
+                        //     )
+                        // }
+                        
+                        if(options.length == 0) selectedValue = ''
+
+                        // Check if all items satisfy the condition
+                        const allValid = options.every(option => !isNaN(option.value) && option.value !== null && option.value !== undefined);
+
+                        // If all values are valid, sort and replace the original options
+                        if (allValid) {
+                            const sortedOptions = options
+                                .map(option => ({
+                                    ...option,
+                                    value: Number(option.value)  // Convert value to number for sorting
+                                }))
+                                .sort((a, b) => b.value - a.value);
+
+                            // Replace the original options
+                            options.length = 0; // Clear the original options array
+                            options.push(...sortedOptions); // Add the sorted options back to the original array
+                        }
+
+                        return(
+                            <FormControl  key={index} sx={{flexGrow:1, minWidth:'200px'}}>
+                                <InputLabel>{isLoading ? 'Loading': specLabel}</InputLabel>
+                                <Select
+                                    onChange={(event) => handleDropdownChange(event.target.value, specKey)}
+                                    label={isLoading ? 'Loading' : specLabel}
+                                    disabled={options.length == 0}
+                                    value={selectedValue}
+                                >
+                                    {
+                                        options.map(({value, label}, index) => <MenuItem key={index} value={value}>{label}</MenuItem> )
+                                    }
+                                </Select>
+                            </FormControl>
+                        )
+                    })
+                }
+                <Button loading={isSubmitButtonLoading} sx={{minWidth:'150px', backgroundColor:submitButtonBackgroundColor}} variant={'solid'} disabled={isSubmitButtonDisabled } onClick={handleSubmission}>{submitButtonText}</Button>
+            </div>
         </div>
+
     )
 }

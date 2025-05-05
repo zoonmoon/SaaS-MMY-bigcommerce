@@ -1,3 +1,5 @@
+import { widgetsThatShouldBeCreated } from "../data";
+
 // Helper to build headers
 function getHeaders(accessToken) {
     return {
@@ -73,8 +75,10 @@ export async function getAllWidgetTemplates(storeHash, accessToken) {
 
         const data = await res.json();
         const templates = {};
+        const namesOfWidgetTemplatesThatShouldBeCreated = widgetsThatShouldBeCreated.map(w => w.name)
         data.data.forEach(template => {
-            templates[template.name] = template.uuid;
+            if(namesOfWidgetTemplatesThatShouldBeCreated.includes(template.name))
+            templates[template.name] = { uuid: template.uuid, name: template.name, widget_template: template.template};
         });
         return templates;
     } catch (err) {
@@ -131,6 +135,7 @@ export async function deleteWidget(uuid, store_hash, access_token) {
 
 
 export async function deleteWidgetTemplate(uuid, storeHash, access_token) {
+
     try {
         const res = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/content/widget-templates/${uuid}`, {
             method: 'DELETE',
@@ -147,5 +152,37 @@ export async function deleteWidgetTemplate(uuid, storeHash, access_token) {
     } catch (err) {
         console.error('Error deleting widget template:', err);
         throw err 
+    }
+}
+
+
+export async function updateWidgetTemplate(storeHash, access_token, uuid, template) {
+    
+    console.log(template)
+    try {
+        const res = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/content/widget-templates/${uuid}`, {
+            method: 'PUT',
+            headers: {
+                'X-Auth-Token': access_token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                template: template
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            const errorMessage = data?.title || `HTTP ${res.status}`;
+            throw new Error(`Failed to update widget template: ${errorMessage}`);
+        }
+
+        console.log(`Widget Template ${uuid} updated successfully.`);
+        return true;
+    } catch (err) {
+        console.error('Error updating widget template:', err.message);
+        throw err;
     }
 }

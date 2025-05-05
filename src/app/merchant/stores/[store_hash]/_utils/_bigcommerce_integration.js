@@ -5,7 +5,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Padding } from '@mui/icons-material';
-import { Alert, Breadcrumbs, Chip, Divider, InputLabel, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Breadcrumbs, Chip, Divider, Grid, InputLabel, Paper, Slider, Stack, TextField, Typography } from '@mui/material';
 import toast from 'react-hot-toast';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
@@ -13,6 +13,11 @@ import Link from 'next/link';
 import { LoadingSpinner } from '@/app/api/_lib/misc/utils';
 import { Button } from '@mui/joy';
 
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export  function calculatePostedAgo(date) {
 
@@ -168,7 +173,7 @@ export  function  ScriptManager({storeData}){
 
 export function WidgetManager({storeData}){
 
-    const [widgetData, setWidgetData] = React.useState({widgetsThatShouldBeCreated: [], widgetsRemainingToBeCreated: [], allWidgetsCreated: []})
+    const [widgetData, setWidgetData] = React.useState({allWidgetTemplatesCreated: {}, widgetsThatShouldBeCreated: [], widgetsRemainingToBeCreated: [], allWidgetsCreated: []})
     const [isLoading, setIsLoading] = React.useState(true)
 
     async function fetchWidgetStaus(){
@@ -186,6 +191,7 @@ export function WidgetManager({storeData}){
             setWidgetData({
                 widgetsThatShouldBeCreated: responseJSON.widgetsThatShouldBeCreated,
                 widgetsRemainingToBeCreated: responseJSON.widgetsRemainingToBeCreated,
+                allWidgetTemplatesCreated: Object.values(responseJSON.allWidgetTemplatesCreated),
                 allWidgetsCreated: responseJSON.allWidgetsCreated
             })
 
@@ -266,10 +272,158 @@ export function WidgetManager({storeData}){
         }
     }
 
+    const [activeWidgetTemplate, setActiveWidgtTemplate] = React.useState('') 
+
+    const resetActiveTemplate = () => setActiveWidgtTemplate('')
+
+    const handleActiveWidgetTemplateChange = (uuid) => setActiveWidgtTemplate(uuid)
+
+
+    function extractDivInfo(htmlString) {
+        // Create a DOM parser
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+    
+        // Get the first div (without using ID or class)
+        const firstDiv = doc.querySelector('div');
+        const classes = firstDiv ? firstDiv.getAttribute('data-classes') : '';
+        const widgetHeading = firstDiv ? firstDiv.getAttribute('data-title') : '';
+        const submitButtonText = firstDiv ? firstDiv.getAttribute('data-submit-button-text') : '';
+        const submitButtonBackgroundColor = firstDiv ? firstDiv.getAttribute('data-submit-button-bg-color') : '';
+        let headingFontSize = firstDiv ? firstDiv.getAttribute('data-heading-font-size') : '';
+        
+
+        if(headingFontSize.trim().length == 0) headingFontSize = 16 
+        headingFontSize = parseInt(headingFontSize) 
+
+        return {
+            classes,
+            widgetHeading,
+            submitButtonText,
+            submitButtonBackgroundColor,
+            headingFontSize
+        };
+
+    }
+
+    const DisplayEditForm = () => {
+
+
+        console.log(widgetData.allWidgetTemplatesCreated)
+        console.log(activeWidgetTemplate)
+
+        const activeTemplateDetails = widgetData.allWidgetTemplatesCreated.filter(w => w.uuid === activeWidgetTemplate)[0]
+        
+        let templateConfig = activeTemplateDetails.widget_template 
+        
+        let {classes,widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize} = extractDivInfo(templateConfig)
+        
+        console.log(classes, submitButtonBackgroundColor, submitButtonText, headingFontSize)
+
+        const [isEditing, setIsEditing] = React.useState(false)
+
+        const handleSubmit = async (e) => {
+
+            e.preventDefault();
+            
+            const formData = new FormData(e.currentTarget);
+            
+            try{
+                
+                setIsEditing(true)
+    
+                const response  = await fetch(
+                    `/api/merchant/stores/${storeData.store_hash}/bigcommerce-integration/widget-manager`, 
+                    { method: 'PUT', body: formData }
+                );
+    
+                const responseJSON = await response.json() 
+    
+                if(responseJSON.success == false ) throw new Error(responseJSON.message)
+                
+                toast(responseJSON.message)
+
+                resetActiveTemplate() 
+
+                fetchWidgetStaus()
+                
+            }catch(error){
+                toast(error.message)
+            }finally{
+                setIsEditing(false)
+            }
+    
+        };
+    
+        function valuetext(value) {
+            return `${value}px`;
+          }
+
+        const [sliderValue, setSliderValue] = React.useState(headingFontSize)
+        const handleSliderChange = (e) => setSliderValue(e.target.value)
+
+        const[backgroundColor, setBackgroundColor] = React.useState(submitButtonBackgroundColor)
+        const handleBackgroundColorChange = (e) => setBackgroundColor(e.target.value)
+        return(
+            <Dialog
+                open={true}
+                onClose={()=>{}}
+                fullWidth
+                slotProps={{
+                paper: {},
+                }}
+            >
+                <DialogTitle>Edit {activeTemplateDetails.name}</DialogTitle>
+                <DialogContent style={{width:'100%'}}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ minWidth:'100%', paddingTop:1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <input type='hidden' name='uuid' value={activeWidgetTemplate} />
+                        <input type='hidden' name='widget_name' value={activeTemplateDetails.name} />
+                        <div>
+                            <TextField defaultValue={classes} label="Widget Container Div Classes" name="widget_container_div_classes"  fullWidth />
+                            <small>Separate classes by space</small>
+                        </div>
+                        <div>
+                            <TextField defaultValue={widgetHeading} label="Widget Heading" name="widget_title"  fullWidth />
+                        </div>
+                        <div style={{display:'flex', gap:'50px', alignItems:'center'}}>
+                            <div>Heading Font Size </div>
+                            <Slider
+                                style={{maxWidth:'200px'}}
+                                aria-label="Temperature"
+                                defaultValue={headingFontSize}
+                                getAriaValueText={valuetext}
+                                marks
+                                onChange={handleSliderChange}
+                                min={16}
+                                max={50}
+                                valueLabelDisplay='auto'
+                                
+                                name="heading_font_size"
+                            />
+                            <div>{sliderValue} px</div>
+                        </div>
+                        <TextField defaultValue={submitButtonText} label="Submit Button Text" name="submit_button_text"  fullWidth />
+                        <div style={{display:'flex', gap:'50px', alignItems:'center'}}>
+                            <div>Submit Button Background Color</div>
+                            <input onChange={handleBackgroundColorChange} defaultValue={submitButtonBackgroundColor} type='color' name="submit_button_background_color" />
+                            <div>{backgroundColor.toUpperCase()}</div>
+                        </div>                        
+                        <DialogActions>
+                            <Button variant={'outlined'} disabled={isEditing} onClick={resetActiveTemplate}>Cancel</Button>
+                            <Button loading={isEditing}  type="submit">Submit</Button>
+                        </DialogActions>
+                    </Box>
+                </DialogContent>
+
+            </Dialog>
+        )
+    }
+
     if(isLoading) return(<LoadingSpinner />)
 
     return(
         <>
+            {activeWidgetTemplate !== '' && (<DisplayEditForm /> )}
             <Stack spacing={2}>
                 {
                     ( 
@@ -295,7 +449,34 @@ export function WidgetManager({storeData}){
                         </>
                     )
                 }
-                <Divider></Divider>
+                <Divider>{widgetData.allWidgetTemplatesCreated.length > 0 ? 'Created Widgets' : ''}</Divider>
+                {
+                    widgetData.allWidgetTemplatesCreated.length > 0 && (
+                        <Stack spacing={3}>
+                            <Grid container spacing={3}>
+                                {
+                                    widgetData.allWidgetTemplatesCreated.map((template, index) => {
+                                        return(
+                                            <Grid 
+                                                onClick={() =>handleActiveWidgetTemplateChange(template.uuid)}
+                                                sx={{cursor:'pointer'}} 
+                                                key={index} 
+                                                spacing={2} 
+                                                size={{xs:12, md: 4, lg: 4}}
+                                            >
+                                                <Paper elevation={3} sx={{'&:hover':{backgroundColor:'rgba(0, 0, 0, 0.1)'},padding: 4, display:'flex', justifyContent:'center', alignItems:'center', minHeight:'50px'}}>
+                                                    {template.name }
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    })
+                                }
+                            </Grid>
+                            <Divider></Divider>
+                        </Stack>
+                    )
+                }
+
                 <Stack direction={'row'} spacing={3}>
                     {
                         ( 

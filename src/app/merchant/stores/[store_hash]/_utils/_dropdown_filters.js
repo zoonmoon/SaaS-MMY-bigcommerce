@@ -56,10 +56,11 @@ export  function DropdownFilters({storeData})  {
                                     </Link>
                                 </Stack>
                             ): (
-                                <Stack spacing={2}>
-                                    <div>
-                                        <strong>Column containing Product ID</strong> <div>{productColumn}</div>
-                                    </div>
+                                <Stack spacing={3}>
+                                    <Stack spacing={1}>
+                                        <strong>Column containing Product ID</strong> 
+                                        <div><Chip sx={{minWidth:'100px'}} variant="outlined" label={productColumn} /></div>
+                                    </Stack>
                                     <Stack spacing={1}>
                                         <div><strong>Dropdown Filters</strong></div>
                                         <div>

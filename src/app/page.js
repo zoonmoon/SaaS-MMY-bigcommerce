@@ -5,14 +5,11 @@ import {
   Button,
   Box,
   Grid,
-  AppBar,
-  Toolbar,
   Paper
 } from '@mui/material';
-import Link from 'next/link';
 
 export default function LandingPage() {
-
+  
   return (
     <>
       {/* Top Navbar */}

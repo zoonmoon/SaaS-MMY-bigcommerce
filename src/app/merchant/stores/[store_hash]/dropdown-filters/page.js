@@ -156,6 +156,7 @@ export default function StoreDetails({params}){
                                 </Alert>
                                 
                                 <DragAndDrop
+                                    columnContainingProductIDs={columnContainingProductIDs}
                                     allItems={spreadsheetColumns}
                                     initialRightItems={selectedDropdownFilters}
                                     handleSelectedFiltersChange={handleSelectedFiltersChange}

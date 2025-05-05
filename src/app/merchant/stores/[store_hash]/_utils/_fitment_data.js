@@ -91,7 +91,7 @@ export function FitmentDataSource({storeData}){
                             <Divider></Divider>
                             <Stack spacing={2}>
                             <Alert severity={'info'}>If you have recently updated google sheet, click the button below so that the sheet changes take effect instantly in the website dropdown filter</Alert>
-                            <Alert severity={'info'}>The fitment sheet is automatically re-indexed one time in 24 hours interval</Alert>
+                            <Alert severity={'info'}>The fitment sheet is automatically re-indexed once in 24 hours interval</Alert>
                             <div>
                                     <Button loading={isSyncingFitmentSheet || isLoading} variant={'outlined'} onClick={syncFitmentSheet}>Synchronize Fitment Sheet</Button>
                                 </div>

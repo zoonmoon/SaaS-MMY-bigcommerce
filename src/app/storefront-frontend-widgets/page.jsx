@@ -18,6 +18,7 @@ function HomePageSpecsDropdownWidget(){
         endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
         callbackToSubmission={callBack}
         storeHash={process.env.NEXT_PUBLIC_STORE_HASH}
+        dataID="ymm-home-page-widget"
       /> 
     </div>
   ) 

@@ -112,6 +112,7 @@ export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEX
                     endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
                     callbackToSubmission={callBack}
                     storeHash={storeHash}
+                    dataID="ymm-search-page-widget"
                   /> 
                 ): (
                   <div style={{display:'flex', alignItems:'center', gap:'20px', flexWrap:'wrap'}}>

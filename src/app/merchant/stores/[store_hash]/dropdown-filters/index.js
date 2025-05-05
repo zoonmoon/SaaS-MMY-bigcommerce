@@ -108,15 +108,15 @@ function DroppableContainer({ id, children }) {
 }
 
 // Main DragDropColumns Component
-function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelectedFiltersChange }) {
+function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelectedFiltersChange, columnContainingProductIDs }) {
   // Generate IDs for items if they don't have them
-  const itemsWithIds = totalItems.map((item, index) => 
+  const itemsWithIds = totalItems.filter(item => item != columnContainingProductIDs).map((item, index) => 
     typeof item === 'string' ? { id: `item-${index}`, content: item } : item
   );
   
   const [activeId, setActiveId] = useState(null);
   const [rightItems, setRightItems] = useState(
-    initialRightItems.map((item, index) => 
+    initialRightItems.filter(item => item != columnContainingProductIDs).map((item, index) => 
       typeof item === 'string' ? { id: `right-${index}`, content: item } : item
     )
   );
@@ -149,7 +149,7 @@ function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelect
   }
 
   function handleDragEnd(event) {
-    const { active, over } = event;
+    const { active, over,  } = event;
     
     if (!over) {
       setActiveId(null);
@@ -225,6 +225,7 @@ function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelect
     fontSize: '20px',
     marginTop: 0,
     fontWeight: 'bold',
+    textAlign:'center',
     marginBottom: '16px',
   };
 
@@ -249,7 +250,7 @@ function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelect
           {/* Left Column (Not sortable, but draggable) */}
           <div style={leftColumnStyle}>
             <h2 style={headerStyle}>Available Filters</h2>
-            <DroppableContainer id="left-container">
+            <DroppableContainer  id="left-container">
               {leftItems.map(item => (
                 <Item 
                   key={item.id} 
@@ -306,18 +307,18 @@ function DragDropColumns({ totalItems = [], initialRightItems = [], handleSelect
 }
 
 // Example usage
-function DragAndDrop({allItems, initialRightItems, handleSelectedFiltersChange}) {
+function DragAndDrop({allItems,columnContainingProductIDs, initialRightItems, handleSelectedFiltersChange}) {
   // Sample data
 
   const appStyle = {
   };
 
-
   return (
     <div style={appStyle}>
       <DragDropColumns
-        totalItems={allItems}
-        initialRightItems={initialRightItems}
+        columnContainingProductIDs={columnContainingProductIDs}
+        totalItems={allItems.filter(item => item!=columnContainingProductIDs)}
+        initialRightItems={initialRightItems.filter(item => item != columnContainingProductIDs) }
         handleSelectedFiltersChange={handleSelectedFiltersChange}
       />
     </div>

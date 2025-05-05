@@ -99,9 +99,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
   const handleDropdownWidgetViewToggle = () => setIsDropdownWidgetsOpen(!isDropdownWidgetsOpen)
 
   return(
-    <div
-      style={{marginTop:'20px'}}
-    >
+    <div style={{paddingTop:'20px', paddingBottom:'20px'}}>
       {
         isLoadingHashVsDetails 
           ? 

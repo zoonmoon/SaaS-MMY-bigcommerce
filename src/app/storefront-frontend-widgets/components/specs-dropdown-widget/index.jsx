@@ -289,10 +289,10 @@ export function SpecsDropdownWidget(
         return false 
 
     }
-    
+
 
     return(
-        <div style={{paddingTop:'20px', paddingBottom:'20px'}}>
+        <div>
             {
                 widgetHeading.trim().length > 0 && (
                     <div className='widget-heading' style={{fontSize:headingFontSize+'px', marginBottom:'10px'}}>

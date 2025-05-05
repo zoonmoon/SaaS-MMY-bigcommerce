@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
 
-export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEXT_PUBLIC_STORE_HASH}){
+export default function SpecsDropdownWidgetSearchPage({widgetProps,storeHash=process.env.NEXT_PUBLIC_STORE_HASH}){
 
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
@@ -112,7 +112,7 @@ export default function SpecsDropdownWidgetSearchPage({storeHash=process.env.NEX
                     endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
                     callbackToSubmission={callBack}
                     storeHash={storeHash}
-                    dataID="ymm-search-page-widget"
+                    widgetProps={widgetProps}
                   /> 
                 ): (
                   <div style={{display:'flex', alignItems:'center', gap:'20px', flexWrap:'wrap'}}>

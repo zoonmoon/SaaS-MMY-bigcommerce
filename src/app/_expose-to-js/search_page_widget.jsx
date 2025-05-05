@@ -8,11 +8,12 @@ export function renderSearchPageYmmWidget() {
     const container = document.getElementById("ymm-search-page-widget");
     
     if (!container) return;
+    const widgetProps = returnWidgetProps("ymm-search-page-widget")
     
     const root = ReactDOM.createRoot(container);
     
     root.render(
-        <SpecsDropdownWidgetSearchPage />
+        <SpecsDropdownWidgetSearchPage  widgetProps={widgetProps}/>
     );
 
 }

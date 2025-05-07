@@ -5,7 +5,7 @@ import { returnWidgetProps } from "./utils";
 // Replace this function name if needed
 import SpecsDropdownWidgetProductPage from "../storefront-frontend-widgets/product_page/page";
 
-export function renderSearchPageYmmWidget() {
+export function renderProductPageYmmWidget() {
 
     const container = document.getElementById("ymm-product-page-widget");
     

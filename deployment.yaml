@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nextjs
-          image: zoonmoon/saas-ymm-bigc:v2.4
+          image: zoonmoon/ymm-saas-bigc:v3.0
           ports:
             - containerPort: 3000
           env:

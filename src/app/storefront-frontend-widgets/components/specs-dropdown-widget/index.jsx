@@ -2,6 +2,7 @@ import Button from '@mui/joy/Button';
 import { useEffect, useState, useRef } from "react";
 import {  FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Cookies from 'js-cookie';
+import { LoadingSpinner } from '../loading-spinner';
 
 export function SpecsDropdownWidget(
     { 
@@ -12,6 +13,9 @@ export function SpecsDropdownWidget(
         widgetProps
     }
 ){
+
+    console.log("widgetProps", widgetProps)
+
     const {
         classes = '',
         widgetHeading = '',
@@ -35,6 +39,10 @@ export function SpecsDropdownWidget(
     const returnYMMspecsFromURL = () => {
         const urlParams = new URLSearchParams(window.location.search); 
         let fits = urlParams.get('ymm_specs');
+        // const selectedSpecs = Cookies.get('ymm_specs') 
+        // if(fits == null &&  selectedSpecs) {
+        //     fits = selectedSpecs
+        // }  
         return fits
     }
 
@@ -156,6 +164,16 @@ export function SpecsDropdownWidget(
 
         let fits = returnYMMspecsFromURL()
 
+        const selectedSpecs = Cookies.get('ymm_specs') 
+
+        if(fits == null && selectedSpecs){
+
+            let selectedValues = Object.values(JSON.parse(selectedSpecs))
+            .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
+            .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
+            fits = selectedValues
+        }
+
         if(fits == null ){
             setDropdownSpecs(presentState) 
             return 
@@ -262,15 +280,15 @@ export function SpecsDropdownWidget(
     }
 
     const isDropdownSpecsSetFromCookie = () => {
-
+        return false 
         let fits = returnYMMspecsFromURL()
         const selectedSpecs = Cookies.get('ymm_specs') 
         if(fits == null &&  selectedSpecs) {
             setDropdownSpecs(JSON.parse(selectedSpecs))
-            return true 
+            return false 
+            // return true 
         }  
-
-
+        
         if(fits != null && selectedSpecs ){
         
             fits = fits.replaceAll('"', '')
@@ -290,6 +308,8 @@ export function SpecsDropdownWidget(
 
     }
 
+    if(Object.values(dropdownSpecs ?? {}).length == 0 )
+    return(<LoadingSpinner />)
 
     return(
         <div>
@@ -309,7 +329,7 @@ export function SpecsDropdownWidget(
                 }}
             >
                 {
-                    Object.values(dropdownSpecs)
+                    Object.values(dropdownSpecs ?? {})
                     
                     .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
 

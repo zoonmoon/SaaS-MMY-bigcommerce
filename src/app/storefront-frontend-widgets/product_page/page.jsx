@@ -31,7 +31,7 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
 
             let queryparams = []
             queryparams.push(`store_hash=${process.env.NEXT_PUBLIC_STORE_HASH}`)
-            queryparams.push(`product_id=${product_id}`) 
+            queryparams.push(`product_id=${window.productId}`) 
             queryparams.join('&')
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/product-id-vs-search-keywords?${queryparams.join('&')}`)
             

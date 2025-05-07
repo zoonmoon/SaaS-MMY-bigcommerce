@@ -7,11 +7,14 @@ import SpecsDropdownWidgetProductPage from "../storefront-frontend-widgets/produ
 
 export function renderProductPageYmmWidget() {
 
+    console.log("rendering pdp widget")
+
     const container = document.getElementById("ymm-product-page-widget");
     
     if (!container) return;
     const widgetProps = returnWidgetProps("ymm-product-page-widget")
     
+    console.log("after return")
     const root = ReactDOM.createRoot(container);
     
     root.render(

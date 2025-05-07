@@ -5,6 +5,7 @@ import { SpecsDropdownWidget } from "../components/specs-dropdown-widget";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { LoadingSpinner } from "../components/loading-spinner";
+import { Alert } from "@mui/material";
 
 export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
 
@@ -16,7 +17,7 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
     let [selectedSpecsLabels, setSelectedSpecsLabels] = useState('')
 
     const callBack = (selectedSpecs) => {
-        setSelectedSpecsLabels(selectedSpecs)
+        setSelectedSpecsLabels(selectedSpecs.split('::').map(a => a.split(':')[1]).join(' '))
         setSelectedSpecs(selectedSpecs)
     };
 
@@ -108,23 +109,23 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
                                            .map(sk => sk.trim())
                                            .includes(selectedSpecs)
                                             ? (
-                                                <div>
+                                                <Alert severity={'success'}>
                                                     <div>
                                                         This product fits your <strong>{selectedSpecsLabels}</strong>
                                                     </div>
                                                     <div onClick={handleChangeSelection} style={{textDecoration:'underline', cursor:'pointer'}}>
                                                         Change Selection
                                                     </div>
-                                                </div>
+                                                </Alert>
                                             ) : (
-                                                <div>
+                                                <Alert severity={'error'}>
                                                     <div>
                                                         This product does not fit your <strong>{selectedSpecsLabels}</strong>
                                                     </div>
                                                     <div onClick={handleChangeSelection} style={{textDecoration:'underline', cursor:'pointer' }}>
                                                         Change Selection
                                                     </div>
-                                                </div>
+                                                </Alert>
                                             )
                                         }
                                     </>
@@ -132,9 +133,9 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
                             }
                         </>
                     ): (
-                        <>
-                            Product Lacks Fitment Data. Please verify fitment manually.
-                        </>
+                        <Alert severity={'info'}>
+                            This Product Lacks Fitment Data. Please verify fitment manually.
+                        </Alert>
                     )
             }
           </>

@@ -81,7 +81,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
                 console.log("spec.selectedValue", spec.selectedValue) 
                 console.log("spec.options", spec.options) 
                 
-                let filtered =   spec.options.filter(option => option.value === spec.selectedValue )
+                let filtered =   spec.options.filter(option => option.value == spec.selectedValue )
                 console.log(filtered) 
                 if(filtered.length > 0){
                   return filtered[0].label 

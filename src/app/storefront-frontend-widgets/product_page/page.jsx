@@ -80,6 +80,11 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
 
   const handleChangeSelection = () => setSelectedSpecs('')
   
+   const viewProductsThatFitYourSelection = () => {
+    window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
+  };
+
+
   return(
     <div style={{paddingTop:'20px', paddingBottom:'20px'}}>
 
@@ -124,6 +129,9 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
                                                     </div>
                                                     <div onClick={handleChangeSelection} style={{textDecoration:'underline', cursor:'pointer' }}>
                                                         Change Selection
+                                                    </div>
+                                                    <div onClick={viewProductsThatFitYourSelection} style={{textDecoration:'underline', cursor:'pointer' }}>
+                                                        View products that fit your selection
                                                     </div>
                                                 </Alert>
                                             )

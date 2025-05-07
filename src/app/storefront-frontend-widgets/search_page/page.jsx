@@ -77,7 +77,17 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
 
             let selectedValues = Object.values(JSON.parse(selectedSpecs))
               .sort( (spec1, spec2 ) => spec1.sortOrder - spec2.sortOrder )
-              .map( spec => spec.options.filter(option => option.value === spec.selectedValue )[0].label )
+              .map( spec => {
+                console.log("spec.selectedValue", spec.selectedValue) 
+                console.log("spec.options", spec.options) 
+                
+                let filtered =   spec.options.filter(option => option.value === spec.selectedValue )
+                console.log(filtered) 
+                if(filtered.length > 0){
+                  return filtered[0].label 
+                } 
+                return ''
+              })
               .join(' ')
 
               setIsLoadingHashVsDetails(false)

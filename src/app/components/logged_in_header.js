@@ -13,10 +13,12 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/joy';
+import Link from 'next/link';
 
 const drawerWidth = 240;
-const navItems = ['Stores', 'Billing', 'Contact', 'Log Out'];
+const navItems = [{label: 'Stores', href: '/merchant/stores'}, {label: 'Users', href: "/users/"}];
+const navItemsRight = [{label: 'Log Out', href: '/logout'}]
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -27,18 +29,19 @@ function DrawerAppBar(props) {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
-      </Typography>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', paddingTop:'10px' }}>
+      <img  src={'/ymm-logo-3.png'} style={{borderRadius:'50%'}} width={'60px'} height={'auto'}/>
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
+          <Link href={item.href} key={item.label}>
+            <ListItem  disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
         ))}
       </List>
     </Box>
@@ -47,10 +50,10 @@ function DrawerAppBar(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box  sx={{ display: 'flex',  position:'sticky', top: 0,  marginBottom:'30px' }}>
       <CssBaseline />
-      <AppBar sx={{position:'sticky'}} component="nav">
-        <Toolbar>
+      <AppBar color={'inherit'}  sx={{position:'unset', paddingTop:'8px', paddingBottom:'8px'}} component="nav">
+        <Toolbar sx={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -60,18 +63,27 @@ function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            MUI
-          </Typography>
+          
+          <a href='/merchant/stores'>
+            <img src={'/ymm-logo-3.png'} width={'60px'} />
+          </a>
+          
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
-              </Button>
+              <Link href={item.href} key={item.label}>
+                <Button variant={'plain'} >
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
+          </Box>
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            {navItemsRight.map((item) => (
+              <Link href={item.href} key={item.label}>
+                <Button variant={'plain'}>
+                  {item.label}
+                </Button>
+              </Link>
             ))}
           </Box>
         </Toolbar>

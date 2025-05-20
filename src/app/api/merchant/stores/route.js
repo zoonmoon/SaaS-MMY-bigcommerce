@@ -2,19 +2,42 @@ import openSearchClient from "@/app/api/_lib/opensearch";
 
 import { getLoggedInUsername } from "../../_lib/session";
 
-export async function GET(){
+export async function GET(request){
 
     const index = 'stores'
 
     const {token_exists, username} = await getLoggedInUsername()
+
+    const must =  [
+      { term: { username } }
+    ]
+
+    const { searchParams } = request.nextUrl;
+    const search_query = searchParams.get('search_query');
+    const active_tab = searchParams.get('active_tab');
+    
+    if (search_query.trim().length > 0) {
+      must.push({
+        wildcard: {
+          store_name: {
+            value: `*${search_query.toLowerCase()}*`,
+            case_insensitive: true
+          }
+        }
+      });
+    } else {
+        must.push({
+          term: { active_status:active_tab }
+        });
+    }
 
     try {
         const result = await openSearchClient.search({
           index,
           body: {
             query: {
-              term: {
-                username
+              bool: {
+                must
               }
             }
           }
@@ -51,16 +74,18 @@ export async function POST(request) {
       );
     }
 
+    const must =  [
+      { term: { username } },
+      { term: { store_hash } }
+    ]
+
     // Check for duplicate store_hash for this username
     const existing = await openSearchClient.search({
       index,
       body: {
         query: {
           bool: {
-            must: [
-              { term: { username } },
-              { term: { store_hash } }
-            ]
+            must
           }
         }
       }
@@ -78,7 +103,8 @@ export async function POST(request) {
       username,
       store_hash,
       store_name,
-      access_token
+      access_token,
+      active_status: "active"
     };
 
     await openSearchClient.index({

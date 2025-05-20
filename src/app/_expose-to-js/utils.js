@@ -9,5 +9,7 @@ export function returnWidgetProps(elemID){
     if( headingFontSize.trim().length == 0 ) headingFontSize = 16
     if(submitButtonBackgroundColor.trim().length == 0 ) submitButtonBackgroundColor = '#000000'
     if(submitButtonText.trim().length == 0) submitButtonText = 'Go'
-    return {classes, widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize}
+    let store_hash = false
+    if(window.store_hash) store_hash = window.store_hash
+    return {classes, store_hash, widgetHeading, submitButtonText, submitButtonBackgroundColor, headingFontSize}
 }

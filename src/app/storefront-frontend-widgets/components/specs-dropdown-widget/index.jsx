@@ -7,7 +7,6 @@ import { LoadingSpinner } from '../loading-spinner';
 export function SpecsDropdownWidget(
     { 
         endpoint, 
-        storeHash, 
         callbackToSubmission, 
         listingPage = false, 
         widgetProps
@@ -19,6 +18,7 @@ export function SpecsDropdownWidget(
     const {
         classes = '',
         widgetHeading = '',
+        store_hash = process.env.NEXT_PUBLIC_STORE_HASH, // 
         submitButtonText = 'Go',
         submitButtonBackgroundColor = '#000000',
         headingFontSize = '14'
@@ -38,11 +38,7 @@ export function SpecsDropdownWidget(
     
     const returnYMMspecsFromURL = () => {
         const urlParams = new URLSearchParams(window.location.search); 
-        let fits = urlParams.get('ymm_specs');
-        // const selectedSpecs = Cookies.get('ymm_specs') 
-        // if(fits == null &&  selectedSpecs) {
-        //     fits = selectedSpecs
-        // }  
+        let fits = urlParams.get('ymm_specs'); 
         return fits
     }
 
@@ -52,7 +48,6 @@ export function SpecsDropdownWidget(
         
         let presentStateTemp  = {...presentState}
 
-        console.log("presentStateTemp",  presentStateTemp)
         // if the order is make engine year model
         // if we are fetching year, then only the make and engine should be used to fetch the year options
         // similary to fetch engine, we need to pass the value of only the make 
@@ -70,7 +65,7 @@ export function SpecsDropdownWidget(
         
         const queryParams = []
         
-        queryParams.push(`store_hash=${storeHash}`)
+        queryParams.push(`store_hash=${store_hash}`)
         queryParams.push(`selected_specs_info=${returnSelectedInfo(specToFetch, presentState)}`)
         queryParams.push(`spec_to_fetch=${specToFetch}`) // based on 
         queryParams.push(`is_listing_page=${listingPage}`) // based on 
@@ -127,9 +122,8 @@ export function SpecsDropdownWidget(
         
         let dropdownSpecsExistingTemp2 = {...dropdownSpecsExistingTemp}
         
-        if (isFetchingRef.current) return; // 🔒 Guard: fully reliable
-        
-        isFetchingRef.current = true;      // 🔒 Immediately locks further calls        
+        console.log("fetching, isFetchingRef.current: ", isFetchingRef.current)
+       
 
         try{
 
@@ -141,63 +135,89 @@ export function SpecsDropdownWidget(
             
             const newState = processFetchedData(dropdownSpecsExistingTemp2, dropdownSpecsFetchedData) 
 
+            console.log("newState")
+            console.log(newState)
+
             return newState
 
         }catch(error){
 
-            console.error(error)
+            throw error 
 
-        }finally{
-
-            isFetchingRef.current = false; // ✅ always unlock, even on error
-            
         }
 
     }
 
     async function initialize(){
         
-        if(isDropdownSpecsSetFromCookie()) return 
+        try{
 
-        let presentState = await fetchDropdownSpecs() 
-        // this state consists only the starting years
+            // console.log("initializing")
 
-        let fits = returnYMMspecsFromURL()
-
-        const selectedSpecs = Cookies.get('ymm_specs') 
-
-        if(fits == null && selectedSpecs){
-
-            let selectedValues = Object.values(JSON.parse(selectedSpecs))
-            .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
-            .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
-            fits = selectedValues
-        }
-
-        if(fits == null ){
+            if(isDropdownSpecsSetFromCookie()) return 
+    
+            // console.log("fetchdingdropdownspecs")
+    
+            let presentState = await fetchDropdownSpecs() 
+            // this state consists only the starting years
+            
+            if(Object.values(presentState).length == 0 ){
+                // there might be error fetching the data
+                // or duplicate requests
+                // console.log("returning")
+                return
+            }
+    
+            console.log("after initilizaing, presentstate: ", presentState)
+    
+            let fits = returnYMMspecsFromURL()
+    
+            const selectedSpecs = Cookies.get('ymm_specs') 
+    
+            if(fits == null && selectedSpecs){
+    
+                let selectedValues = Object.values(JSON.parse(selectedSpecs))
+                .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
+                .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
+    
+                fits = selectedValues
+            }
+    
+            if(fits == null ){
+                setDropdownSpecs(presentState) 
+                return 
+            } 
+    
+            fits = fits.replaceAll('"', '')
+            
+            let splittedFits  = fits.split('::') 
+    
+            for(var i =0 ;i<splittedFits.length; i++ ){
+                
+                let [specKey, specValue] = splittedFits[i].split(':') 
+                
+                // console.log("hello before process dropdown changes");
+    
+                // console.log("presentstate", presentState)
+    
+                let newState = await processDropdownChanges(specValue, specKey, presentState) 
+                
+                if(newState !== false )
+                    presentState = newState
+                
+            }
+    
             setDropdownSpecs(presentState) 
-            return 
-        } 
 
-        fits = fits.replaceAll('"', '')
-        
-        let splittedFits  = fits.split('::') 
+        }catch(error){
 
-        for(var i =0 ;i<splittedFits.length; i++ ){
-            
-            let [specKey, specValue] = splittedFits[i].split(':') 
-            
-            let newState = await processDropdownChanges(specValue, specKey, presentState) 
-            
-            if(newState !== false )
-                presentState = newState
-            
+            console.error(error)
+
         }
-
-        setDropdownSpecs(presentState) 
 
     }
 
+    
     useEffect(() => {
         setIsSubmitButtonDisabled( 
             isFetchingRef.current ||   
@@ -211,8 +231,13 @@ export function SpecsDropdownWidget(
     }, [])
 
     const processDropdownChanges = async (newValue, specKey, presentState) => {
-
+        
         let dropdownSpecsExistingTemp = {...presentState}
+
+        console.log("newvalue", newValue) 
+        console.log("speckey", specKey)
+        console.log("dropdownSpecsExistingTemp", dropdownSpecsExistingTemp) 
+        
 
         if(newValue != null )
             dropdownSpecsExistingTemp[specKey].selectedValue = newValue
@@ -281,31 +306,6 @@ export function SpecsDropdownWidget(
 
     const isDropdownSpecsSetFromCookie = () => {
         return false 
-        let fits = returnYMMspecsFromURL()
-        const selectedSpecs = Cookies.get('ymm_specs') 
-        if(fits == null &&  selectedSpecs) {
-            setDropdownSpecs(JSON.parse(selectedSpecs))
-            return false 
-            // return true 
-        }  
-        
-        if(fits != null && selectedSpecs ){
-        
-            fits = fits.replaceAll('"', '')
-            
-            let selectedValues = Object.values(JSON.parse(selectedSpecs))
-                .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
-                .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
-
-            if(fits.replaceAll('"', '') == selectedValues ){
-                setDropdownSpecs(JSON.parse(selectedSpecs))
-                return true 
-            }
-
-        }
-        
-        return false 
-
     }
 
     if(Object.values(dropdownSpecs ?? {}).length == 0 )
@@ -329,7 +329,7 @@ export function SpecsDropdownWidget(
                 }}
             >
                 {
-                    Object.values(dropdownSpecs ?? {})
+                    Object.values(dropdownSpecs)
                     
                     .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
 

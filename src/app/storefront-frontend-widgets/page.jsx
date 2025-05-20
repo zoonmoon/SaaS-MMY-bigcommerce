@@ -9,13 +9,11 @@ function HomePageSpecsDropdownWidget({widgetProps = {}}
     window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
   };
   
-  
   return(
     <div style={{paddingTop:'20px', paddingBottom:'20px'}}>
       <SpecsDropdownWidget 
         endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
         callbackToSubmission={callBack}
-        storeHash={process.env.NEXT_PUBLIC_STORE_HASH}
         widgetProps={widgetProps}
       /> 
     </div>

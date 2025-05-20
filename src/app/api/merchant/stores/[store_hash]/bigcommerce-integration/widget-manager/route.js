@@ -2,6 +2,7 @@ import { fetchStoreData } from "../../indexing/fitment-data/fetch_store_data"
 import { widgetsThatShouldBeCreated } from "./data"
 import { createWidget, createWidgetTemplate, deleteWidget, deleteWidgetTemplate, getAllWidgets, getAllWidgetTemplates, updateWidgetTemplate } from "./utils"
 import { returnTemplate } from "./data"
+import { deleteAllWidgetsAndTemplates } from "./utils"
 
 export async function GET(request, {params}){
     try{
@@ -128,20 +129,8 @@ export async function DELETE(request, {params}){
         
         const {access_token} = await fetchStoreData(store_hash) 
         
-        const allWidgetsCreated = await getAllWidgets(store_hash, access_token) 
-
-        for(let widgetName in allWidgetsCreated){
-            if(widgetsThatShouldBeCreated.map(w => w.name).includes(widgetName))
-                await deleteWidget(allWidgetsCreated[widgetName], store_hash, access_token)
-        }
-
-        const allWidgetTemplatesCreated = await getAllWidgetTemplates(store_hash, access_token)
-
-        for(let widgetTemplateName in allWidgetTemplatesCreated){
-            if(widgetsThatShouldBeCreated.map(w => w.name).includes(widgetTemplateName))
-                await deleteWidgetTemplate(allWidgetTemplatesCreated[widgetTemplateName].uuid, store_hash, access_token)
-        }
-
+        await deleteAllWidgetsAndTemplates(store_hash, access_token)
+        
         return new Response(JSON.stringify({success: true, message: "Widgets deleted successfully"}))
 
     }catch(error){

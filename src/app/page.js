@@ -11,9 +11,8 @@ import {
 export default function LandingPage() {
   
   return (
-    <>
+    <div style={{marginTop:'-30px'}}>
       {/* Top Navbar */}
-
 
       {/* Hero Section */}
       <Paper
@@ -90,6 +89,6 @@ export default function LandingPage() {
           © {new Date().getFullYear()} YMM SaaS — All rights reserved.
         </Typography>
       </Box>
-    </>
+    </div>
   );
 }

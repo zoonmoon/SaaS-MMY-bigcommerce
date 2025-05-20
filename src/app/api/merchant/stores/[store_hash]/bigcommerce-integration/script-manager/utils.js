@@ -1,31 +1,3 @@
-import { exec } from "child_process";
-import { promisify } from "util";
-
-const execPromise = promisify(exec);
-
-export default async function buildAndSaveScriptInsidePublicFolder(storeHash) {
-
-    try {
-
-        // note double sets of  dashes "--" below
-        const { stdout, stderr } = await execPromise(`npx vite build --  --store_hash=${storeHash}`, {
-            cwd: process.cwd(),
-            env: {
-                ...process.env,
-                NODE_ENV: 'production'
-            }
-        });
-
-        // the output directory is defined in the vite config file - vite.config.js
-        // so after above parameterized commmand executes, 
-        // the file gets stored inside public folder 
-
-    }catch (error) {
-        console.log(error.message)
-        throw new Error('Error occured during script build process') 
-    }
-
-}
 
 export async function createScriptInBigCommerce(store_hash, access_token, ymmScriptURL) {
 

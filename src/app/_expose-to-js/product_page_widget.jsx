@@ -8,7 +8,7 @@ import SpecsDropdownWidgetProductPage from "../storefront-frontend-widgets/produ
 export function renderProductPageYmmWidget() {
 
     console.log("rendering pdp widget")
-
+    
     const container = document.getElementById("ymm-product-page-widget");
     
     if (!container) return;

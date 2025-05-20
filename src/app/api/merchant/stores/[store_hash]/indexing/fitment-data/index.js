@@ -3,9 +3,9 @@ import { fetchFitmentSheet } from "./fetch_google_sheet";
 import { fetchStoreData } from "./fetch_store_data";
 import { hashVsNewData } from "./hash_vs_data";
 import { validateSpreadsheetURL } from "../../update-google-sheet-url/route";
-import openSearchClient from "@/app/api/_lib/opensearch";
 import { updateSearchKeywords } from "./update-search-keywords";
-
+import { fetchAllSpecsRowsHashes } from "./fetch_all_specs_rows_hashes";
+import openSearchClient from "@/app/api/_lib/opensearch";
 
 export async function syncFitmentData(storeHash){
 
@@ -39,18 +39,44 @@ export async function syncFitmentData(storeHash){
         
         let {hashesVsRows: hashesVsNewFitmentData, pidVsHashes}  = hashVsNewData(selectedDropdownFilters, columnContainingProductIDs,  newFitmentData)
         
-        await openSearchClient.deleteByQuery({
-            index: 'specs_rows',
-            body: {
-              query: {
-                term: {
-                  store_hash: storeHash
-                }
-              }
-            }
-        });
+        let hashesVsIDFromDatabase = await fetchAllSpecsRowsHashes(storeData)
 
-        const chunks = chunkArray(Object.values(hashesVsNewFitmentData).map(row => ({store_hash: storeHash, row})), 5000);
+        let hashesFromDatabase = Object.keys(hashesVsIDFromDatabase)
+
+        let hashesFromGoogleSheet = [...new Set(Object.keys(hashesVsNewFitmentData))]
+
+        // Hashes to delete from the database: present in DB but not in Google Sheet
+        let hashesToDeleteFromDatabase = hashesFromDatabase.filter(hash => !hashesFromGoogleSheet.includes(hash));
+        
+        console.log("hashesToDeleteFromDatabase")
+        console.log(hashesToDeleteFromDatabase) 
+        
+        // Hashes to add to the database: present in Google Sheet but not in DB
+        let hashesToAddToDatabase = hashesFromGoogleSheet.filter(hash => !hashesFromDatabase.includes(hash));
+        console.log("hashesToAddToDatabase")
+        console.log(hashesToAddToDatabase)
+        
+        if (hashesToDeleteFromDatabase.length > 0){
+
+          var documentIDsToDelete = hashesToDeleteFromDatabase.map(hash => hashesVsIDFromDatabase[hash])
+
+          const body = documentIDsToDelete.flatMap(id => [
+            { delete: { _index: 'specs_rows', _id: id } }
+          ]);
+
+          const response = await openSearchClient.bulk({ refresh: true, body });
+
+          console.log(response)
+        
+        }
+        
+        if(hashesToAddToDatabase.length == 0 ) return 
+        
+        const chunks = chunkArray(
+          Object.values(hashesVsNewFitmentData)
+          .filter(r => hashesToAddToDatabase.includes(r.hash))
+          .map(row => ({store_hash: storeHash, row}))
+        , 5000);
 
         for (const chunk of chunks) {
 
@@ -58,19 +84,18 @@ export async function syncFitmentData(storeHash){
                 { index: {} },
                 doc
             ]);
-
+            
             const response = await openSearchClient.bulk({index: 'specs_rows', body });
 
         }
 
-        await updateSearchKeywords(pidVsHashes, storeHash, accessToken)
-        
+        await updateSearchKeywords(pidVsHashes, storeHash, accessToken, hashesToAddToDatabase)
         
         // new data
         // old data
         // find to be deleted
-        // find to be added new 
-
+        // find to be added new
+        
     }catch(error){
 
         console.log(error)

@@ -9,8 +9,8 @@ import { Alert } from "@mui/material";
 
 export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
 
-    const { product_id = '1476'} = widgetProps;
-
+    const { product_id = '1476', store_hash = process.env.NEXT_PUBLIC_STORE_HASH} = widgetProps;
+    
     const [searchKeywords, setSearchKeywords] = useState('')
     let [selectedSpecs, setSelectedSpecs] = useState('')
 
@@ -28,9 +28,9 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
         setIsLoadingProductSearchKeywords(true)
 
         try{
-
+            
             let queryparams = []
-            queryparams.push(`store_hash=${process.env.NEXT_PUBLIC_STORE_HASH}`)
+            queryparams.push(`store_hash=${store_hash}`)
             queryparams.push(`product_id=${window.productId}`) 
             queryparams.join('&')
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/product-id-vs-search-keywords?${queryparams.join('&')}`)
@@ -62,7 +62,6 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
             .sort((spec1, spec2) => spec1.sortOrder - spec2.sortOrder)
             .map(spec => (`${spec.specKey}:${spec.selectedValue}`)).join('::')
         
-
         setSelectedSpecs(selectedValues)
         setSelectedSpecsLabels(selectedValues.split('::').map(a => a.split(':')[1]).join(' '))
 
@@ -103,7 +102,6 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
                                   <SpecsDropdownWidget 
                                     endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
                                     callbackToSubmission={callBack}
-                                    storeHash={process.env.NEXT_PUBLIC_STORE_HASH}
                                     widgetProps={widgetProps}
                                   /> 
                                 ): (

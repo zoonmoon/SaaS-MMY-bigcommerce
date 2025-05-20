@@ -8,8 +8,8 @@ import { LoadingSpinner } from "../components/loading-spinner";
 
 export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
 
-  const { headingFontSize = '14'} = widgetProps;
-
+  const { headingFontSize = '14', store_hash = process.env.NEXT_PUBLIC_STORE_HASH} = widgetProps;
+  
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
   const callBack = (selectedSpecs) => {
@@ -25,11 +25,10 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
     setIsLoadingHashVsDetails(true)
 
     try{
-
+      
       let queryparams = []
-      queryparams.push(`store_hash=${storeHash}`)
+      queryparams.push(`store_hash=${store_hash}`)
       queryparams.push(`hash=${hash}`) 
-      queryparams.join('&')
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/specs-hash-vs-details?${queryparams.join('&')}`)
       
       const responseJSON = await response.json()
@@ -91,7 +90,7 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
               .join(' ')
 
               setIsLoadingHashVsDetails(false)
-              console.log("selectedValues hello", selectedValues)
+              // console.log("selectedValues hello", selectedValues)
               setSelectedSpecsDetailedInfo(selectedValues)
         }else{
           fetchDetailedInfo(fits.replaceAll('"', ''))
@@ -121,7 +120,6 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
                   <SpecsDropdownWidget 
                     endpoint={`${process.env.NEXT_PUBLIC_API_URL}/api/storefront/dropdown-specs`}
                     callbackToSubmission={callBack}
-                    storeHash={process.env.NEXT_PUBLIC_STORE_HASH}
                     widgetProps={widgetProps}
                   /> 
                 ): (

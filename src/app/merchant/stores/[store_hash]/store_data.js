@@ -12,9 +12,10 @@ import { GeneralInfo } from './_utils/_general_info';
 import { FitmentDataSource } from './_utils/_fitment_data';
 import { BigCommerceIntegration } from './_utils/_bigcommerce_integration';
 import { DropdownFilters } from './_utils/_dropdown_filters';
+import { DangerZone } from './_utils/_danzer_zone';
 
 const tabData = (storeData) => {
-
+    
     return  [
         {
             label: "General",
@@ -34,6 +35,10 @@ const tabData = (storeData) => {
         {
             label: "BigCommerce Integration",
             tabContent: <BigCommerceIntegration storeData={storeData} />
+        },
+        {
+            label: "Settings",
+            tabContent: <DangerZone storeData={storeData} />
         }
     ]
 }

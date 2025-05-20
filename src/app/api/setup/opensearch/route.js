@@ -87,4 +87,32 @@ export async function POST(){
 
 export async function PUT(){
 
+    // const response  = await openSearchClient.indices.putMapping({
+    //     index: 'stores',
+    //     body: {
+    //       properties: {
+    //         active_status: {
+    //           type: 'keyword' // Use "keyword" for filterable exact values like "active"
+    //         }
+    //       }
+    //     }
+    // });
+
+
+    const updateresponse = await openSearchClient.updateByQuery({
+        index: 'stores',
+        body: {
+          script: {
+            source: "ctx._source.active_status = 'active';",
+            lang: 'painless'
+          },
+          query: {
+            match_all: {}
+          }
+        },
+        conflicts: 'proceed' // optional
+      });
+
+    return new Response(JSON.stringify(updateresponse))
+
 }

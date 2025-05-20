@@ -186,3 +186,20 @@ export async function updateWidgetTemplate(storeHash, access_token, uuid, templa
         throw err;
     }
 }
+
+
+export async function deleteAllWidgetsAndTemplates(store_hash, access_token){
+            const allWidgetsCreated = await getAllWidgets(store_hash, access_token) 
+
+        for(let widgetName in allWidgetsCreated){
+            if(widgetsThatShouldBeCreated.map(w => w.name).includes(widgetName))
+                await deleteWidget(allWidgetsCreated[widgetName], store_hash, access_token)
+        }
+
+        const allWidgetTemplatesCreated = await getAllWidgetTemplates(store_hash, access_token)
+
+        for(let widgetTemplateName in allWidgetTemplatesCreated){
+            if(widgetsThatShouldBeCreated.map(w => w.name).includes(widgetTemplateName))
+                await deleteWidgetTemplate(allWidgetTemplatesCreated[widgetTemplateName].uuid, store_hash, access_token)
+        }
+}

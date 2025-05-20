@@ -52,7 +52,7 @@ export  function calculatePostedAgo(date) {
 
 export  function  ScriptManager({storeData}){
 
-    const [bigCommerceIntegrationStatus, setBigCommerceIntegrationStatus] = React.useState({})
+    const [bigCommerceIntegrationStatus, setBigCommerceIntegrationStatus] = React.useState({scripts: []})
     const [isLoading, setIsLoading] = React.useState(true)
     const [managingYmmScript, setManagingYmmScript] = React.useState(false )
 
@@ -67,7 +67,7 @@ export  function  ScriptManager({storeData}){
             const responseJSON = await response.json() 
 
             if(responseJSON.success !== true) throw new Error(responseJSON.message)
-
+                
             setBigCommerceIntegrationStatus(responseJSON)
 
         }catch(error){

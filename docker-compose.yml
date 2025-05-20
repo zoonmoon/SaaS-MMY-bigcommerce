@@ -3,11 +3,11 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: zoonmoon/saas-ymm-bigc:v2.2
+    image: zoonmoon/saas-ymm-bigc:v13
     env_file: 
-    - path: ".env" 
+    - path: "./env" 
       required: true
-    - path: ".env.production"
+    - path: "./env.production"
       required: true
     ports:
       - 3000:3000

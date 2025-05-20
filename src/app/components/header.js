@@ -54,7 +54,7 @@ export default function Header(){
     }, [])
 
     if(loading)return(
-        <div style={{background:'white', height:'50px', display:'flex', justifyContent:'center'}}>
+        <div style={{background:'white',  minHeight:'83px', display:'flex', justifyContent:'center'}}>
             <Skeleton width={300}  />
         </div>
     ) 

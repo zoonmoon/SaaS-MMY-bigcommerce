@@ -18,6 +18,8 @@ export default function StoreDetails({params}){
 
         try{    
 
+            setIsLoading(true)
+            
             const response   = await fetch(`/api/merchant/stores/${store_hash}`)
 
             const responseJSON = await response.json() 

@@ -121,3 +121,55 @@ export async function POST(request) {
     );
   }
 }
+
+
+export async function PUT(request) {
+  const index = 'stores';
+
+  const { token_exists, username } = await getLoggedInUsername();
+
+  try {
+
+    const data = await request.formData();
+
+    const doc_id = data.get('doc_id');
+    const store_name = data.get('store_name');
+    const access_token = data.get('access_token');
+
+    if (!doc_id  || !store_name) {
+      return new Response(
+        JSON.stringify({ success: false, message: "Missing required fields" }),
+        { status: 400 }
+      );
+    }
+
+    let updatedStore = {}
+
+    if(!access_token ||  access_token.trim().length == 0)
+      updatedStore = {store_name}
+    else if(access_token && access_token.trim().length > 0)
+      updatedStore = {store_name, access_token}
+    
+
+
+    // Update the existing document by doc_id
+    await openSearchClient.update({
+      index,
+      id: doc_id,
+      body: {
+        doc: updatedStore
+      }
+    });
+
+    return new Response(
+      JSON.stringify({ success: true, message: "Store updated successfully" }),
+      { status: 200 }
+    );
+
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, message: error.message }),
+      { status: 500 }
+    );
+  }
+}

@@ -12,9 +12,16 @@ export default function NewStore({params}){
 
         e.preventDefault();
 
-        const userConfirmed = window.confirm("Are you sure to create store confirming access token and store hash are correct?");
+        const userConfirmed = window.confirm("Are you sure 'modify' access has been granted to scopes 'Sites & routes', 'Content', and 'Products' ?");
 
         if(!userConfirmed){
+            toast('Store creation cancelled')
+            return 
+        }
+        
+        const userConfirmed2 = window.confirm("Are you sure to create store confirming access token and store hash are correct?");
+
+        if(!userConfirmed2){
             toast('Store creation cancelled')
             return 
         }
@@ -56,7 +63,7 @@ export default function NewStore({params}){
                 <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField label="Store Name" name="store_name" required fullWidth />
                     <TextField label="Store Hash" name="store_hash" required fullWidth />
-                    <Alert severity={'warning'}>Access token can not be edited or viewed again later for security purposes</Alert>
+                    <Alert severity={'warning'}>Store hash can not be edited again later</Alert>
                     <Alert severity={'info'}>
                         Please provide <strong>modify</strong> access to following scopes: 
                         <strong>Sites & routes, Content, </strong>and <strong>Products</strong> while creating API token

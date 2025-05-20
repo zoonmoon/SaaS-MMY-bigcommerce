@@ -13,16 +13,16 @@ export async function POST(request, {params}){
         
         const storeData = await fetchStoreData(store_hash)
         
+        await updateDoc('stores', storeData.id, {active_status: "inactive"})
+
         await deleteSearchKeywords(storeData) 
 
         await deleteAllWidgetsAndTemplates(storeData.store_hash, storeData.access_token)
 
-        await updateDoc('stores', storeData.id, {active_status: "inactive"})
-        
         return new Response(JSON.stringify({success: true, message : "Store deactivated"}))
         
     }catch(error){
-
+        
         return new Response(JSON.stringify({success: false, message: 'Error: ' + error.message}))
         
     }

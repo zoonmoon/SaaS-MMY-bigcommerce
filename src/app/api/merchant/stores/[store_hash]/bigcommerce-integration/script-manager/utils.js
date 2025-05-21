@@ -7,13 +7,15 @@ const requiredScripts = ["Header YMM Script", "Main YMM Script"];
 export async function createRequiredScriptsInBigCommerce(store_hash, access_token, baseDomain, scriptsToCreateArray = requiredScripts) {
     const scriptAPIEndpoint = `https://api.bigcommerce.com/stores/${store_hash}/v3/content/scripts`;
 
+    const publicDir = path.join(process.cwd(), 'public', 'ymm-scripts');
+
+    const preRequirementPath = path.join(publicDir, 'pre_requirement.html');
+
+
+
     const storeScriptURL = `${baseDomain}/ymm-scripts/main-v1.js`;
 
     const createdScripts = [];
-    
-    // Ensure folder exists before copying
-    await fs.mkdir(storeScriptFolder, { recursive: true });
-
 
     try {   
         for (const scriptName of scriptsToCreateArray) {

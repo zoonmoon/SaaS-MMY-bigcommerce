@@ -18,7 +18,7 @@ export default defineConfig(({ command, mode }) => {
     lib: {
       entry: 'src/app/_expose-to-js/index.jsx',
       name: 'YmmSelectorWidget',
-      fileName: () => `main.js`,
+      fileName: () => `main-v1.js`, // while changing it, also change it in /script-manager/utils.js api route
       formats: ['iife'], // Immediately Invoked Function Expression (global usage)
     },
     

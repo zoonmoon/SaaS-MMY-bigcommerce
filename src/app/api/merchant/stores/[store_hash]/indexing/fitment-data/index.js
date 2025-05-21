@@ -45,20 +45,48 @@ export async function syncFitmentData(storeHash){
 
         let hashesFromGoogleSheet = [...new Set(Object.keys(hashesVsNewFitmentData))]
 
+        let sameHashesButDifferentPids = []
+
         // Hashes to delete from the database: present in DB but not in Google Sheet
-        let hashesToDeleteFromDatabase = hashesFromDatabase.filter(hash => !hashesFromGoogleSheet.includes(hash));
+        let hashesToDeleteFromDatabase = hashesFromDatabase.filter(hash => {
+          
+          if(!hashesFromGoogleSheet.includes(hash))
+            return true 
+
+          // includes but check if product IDs are different
+          let productIDsFromSheet = hashesVsNewFitmentData[hash][columnContainingProductIDs]
+
+          let productIDsFromDatabase = hashesVsIDFromDatabase[hash][columnContainingProductIDs] 
+
+          if(
+            productIDsFromSheet.length === productIDsFromDatabase.length &&
+            productIDsFromSheet.every(id => productIDsFromDatabase.includes(id)) &&
+            productIDsFromDatabase.every(id => productIDsFromSheet.includes(id))
+          ){
+            return false // they are same 
+          }
+          
+          sameHashesButDifferentPids.push(hash) // product ids  are different
+          return true  
+
+        });
         
-        console.log("hashesToDeleteFromDatabase")
-        console.log(hashesToDeleteFromDatabase) 
+        // console.log("hashesToDeleteFromDatabase")
+        // console.log(hashesToDeleteFromDatabase) 
         
         // Hashes to add to the database: present in Google Sheet but not in DB
         let hashesToAddToDatabase = hashesFromGoogleSheet.filter(hash => !hashesFromDatabase.includes(hash));
-        console.log("hashesToAddToDatabase")
-        console.log(hashesToAddToDatabase)
+        
+        console.log("sameHashesButDifferentPids", sameHashesButDifferentPids)
+
+        hashesToAddToDatabase = [...hashesToAddToDatabase, ...sameHashesButDifferentPids]
+        
+        // console.log("hashesToAddToDatabase")
+        // console.log(hashesToAddToDatabase)
         
         if (hashesToDeleteFromDatabase.length > 0){
 
-          var documentIDsToDelete = hashesToDeleteFromDatabase.map(hash => hashesVsIDFromDatabase[hash])
+          var documentIDsToDelete = hashesToDeleteFromDatabase.map(hash => hashesVsIDFromDatabase[hash].doc_id)
 
           const body = documentIDsToDelete.flatMap(id => [
             { delete: { _index: 'specs_rows', _id: id } }
@@ -88,7 +116,7 @@ export async function syncFitmentData(storeHash){
             const response = await openSearchClient.bulk({index: 'specs_rows', body });
 
         }
-
+        
         await updateSearchKeywords(pidVsHashes, storeHash, accessToken, hashesToAddToDatabase)
         
         // new data

@@ -19,10 +19,10 @@ export async function updateKeywordInBigCommerce(pid, storeHash, accessToken, se
             throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorBody)}`);
         }
         
-        const data = await response.json();
-
-        console.log(data) 
-
+        // const data = await response.json();
+        
+        // console.log(data) 
+        
     }catch(error){
         throw error
     }

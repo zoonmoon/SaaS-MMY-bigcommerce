@@ -2,7 +2,7 @@ import openSearchClient from "@/app/api/_lib/opensearch";
 
 export async function fetchAllSpecsRowsHashes(storeData){
     
-    const{ store_hash} = storeData
+    const{ store_hash, columnContainingProductIDs} = storeData
 
     const must = [
         { term: { store_hash: store_hash } }
@@ -28,7 +28,7 @@ export async function fetchAllSpecsRowsHashes(storeData){
     // Process initial batch
     for (const hit of hits) {
         const hash = hit._source.row?.hash;
-        uniqueHashes[hash] =  hit._id;
+        uniqueHashes[hash] =  {doc_id: hit._id, [columnContainingProductIDs]: hit._source.row[columnContainingProductIDs]}
     }
 
     // Continue scrolling until no more hits
@@ -44,7 +44,7 @@ export async function fetchAllSpecsRowsHashes(storeData){
         // Process initial batch
         for (const hit of hits) {
             const hash = hit._source.row?.hash;
-            uniqueHashes[hash] =  hit._id;
+            uniqueHashes[hash] =  {doc_id: hit._id, [columnContainingProductIDs]: hit._source.row[columnContainingProductIDs] }
         }
 
     }

@@ -5,13 +5,15 @@ import path from 'path';
 
 dotenv.config();
 
+console.log(process.env.NEXT_PUBLIC_API_URL)
+
 export default defineConfig(({ command, mode }) => {
 
   return {
   define: {
     'process.env.NODE_ENV': '"production"',
     'process.env.NEXT_PUBLIC_STORE_HASH': JSON.stringify(''),
-    'process.env.NEXT_PUBLIC_API_URL': JSON.stringify(process.env.NEXT_PUBLIC_API_URL), // use production url
+    'process.env.NEXT_PUBLIC_API_URL': JSON.stringify('htps://api.ymmfinder.com'), // use production url
   },
   plugins: [react({ jsxRuntime : 'automatic' })],
   build: {

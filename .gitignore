@@ -14,7 +14,7 @@
 /coverage
 
 
-store-wise-main-scripts
+public/ymm-scripts/store-wise-main-scripts
 
 # next.js
 /.next/

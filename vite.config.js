@@ -18,7 +18,7 @@ export default defineConfig(({ command, mode }) => {
     lib: {
       entry: 'src/app/_expose-to-js/index.jsx',
       name: 'YmmSelectorWidget',
-      fileName: () => process.env.NEXT_PUBLIC_YMM_SCRIPT_NAME,
+      fileName: () => `main.js`,
       formats: ['iife'], // Immediately Invoked Function Expression (global usage)
     },
     outDir: `./public/${process.env.YMM_SCRIPTS_FOLDER}`,

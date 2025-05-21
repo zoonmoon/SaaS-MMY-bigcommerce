@@ -1,5 +1,6 @@
 import { fetchStoreData } from "../indexing/fitment-data/fetch_store_data"
 import { bigCScriptsCreatedUsingThisAccessToken } from "./script-manager/utils"
+import { requiredScripts } from "./script-manager/data"
 
 export async function GET(request, {params}){
 
@@ -13,7 +14,11 @@ export async function GET(request, {params}){
 
         let scripts = await bigCScriptsCreatedUsingThisAccessToken(store_hash, access_token)    
 
-        return new Response(JSON.stringify({success: true, scripts}))
+        let scriptsAlreadyCreated  = scripts.map(({name}) => name )
+
+        let all_scripts_already_created =  requiredScripts.every(reqScript => scriptsAlreadyCreated.includes(reqScript))
+        
+        return new Response(JSON.stringify({success: true, scripts, requiredScripts, all_scripts_already_created}))
         
     }catch(error){
 

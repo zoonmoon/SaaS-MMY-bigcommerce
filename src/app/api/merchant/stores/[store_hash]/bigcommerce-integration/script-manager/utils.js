@@ -1,52 +1,97 @@
 
-export async function createScriptInBigCommerce(store_hash, access_token, ymmScriptURL) {
+import fs from 'fs/promises';
+import path from 'path';
 
-    const bigCommerceAPIBase = `https://api.bigcommerce.com/stores/${store_hash}/v3/content/scripts`;
-  
-    const body = {
-      name: "YMM Script",
-      description: "Script for YMM functionality",
-      html: `<script src="${ymmScriptURL}"></script>`,  // Use the provided ymmScriptURL
-      auto_uninstall: true,
-      load_method: "default", // or "async"
-      location: "footer", // Changed to footer
-      visibility: "storefront",
-      kind: "script_tag",
-      consent_category: "essential"
-    };
-  
-    try {
+const requiredScripts = ["Header YMM Script", "Main YMM Script"];
 
-        const response = await fetch(bigCommerceAPIBase, {
-            method: "POST",
-            headers: {
-                "X-Auth-Token": access_token,
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
+export async function createRequiredScriptsInBigCommerce(store_hash, access_token, baseDomain, scriptsToCreateArray = requiredScripts) {
+    const scriptAPIEndpoint = `https://api.bigcommerce.com/stores/${store_hash}/v3/content/scripts`;
 
-        const data = await response.json();
+    // Paths
+    const publicDir = path.join(process.cwd(), 'public', 'ymm-scripts');
+    const preRequirementPath = path.join(publicDir, 'pre_requirement.html');
+    const mainScriptSrcPath = path.join(publicDir, 'main.js');
+    const storeScriptFolder = path.join(publicDir, 'store-wise-main-scripts');
+    const storeScriptDestPath = path.join(storeScriptFolder, `${store_hash}.js`);
+    const storeScriptURL = `${baseDomain}/ymm-scripts/store-wise-main-scripts/${store_hash}.js`;
 
-        if (!response.ok) {
-            console.error("Failed to create script in BigCommerce:", data);
-            throw new Error(data.title || "BigCommerce script creation failed");
+    const createdScripts = [];
+
+    // Ensure folder exists before copying
+    await fs.mkdir(storeScriptFolder, { recursive: true });
+
+
+    try {   
+        for (const scriptName of scriptsToCreateArray) {
+            if (!requiredScripts.includes(scriptName)) {
+                console.warn(`Skipping unknown script: ${scriptName}`);
+                continue;
+            }
+
+            let body;
+
+            if (scriptName === "Header YMM Script") {
+                const inlineHTML = await fs.readFile(preRequirementPath, 'utf-8');
+
+                body = {
+                    name: scriptName,
+                    description: "Inline script for YMM header functionality",
+                    html: inlineHTML,
+                    auto_uninstall: true,
+                    load_method: "default",
+                    location: "head",
+                    visibility: "storefront",
+                    kind: "script_tag",
+                    consent_category: "essential"
+                };
+
+            } else if (scriptName === "Main YMM Script") {
+                // Ensure destination folder exists and copy the script
+                await fs.mkdir(path.dirname(storeScriptDestPath), { recursive: true });
+                await fs.copyFile(mainScriptSrcPath, storeScriptDestPath);
+                console.log(`Copied main.js to store-specific path for ${store_hash}`);
+
+                body = {
+                    name: scriptName,
+                    description: "External script for main YMM functionality",
+                    html: `<script src="${storeScriptURL}"></script>`,
+                    auto_uninstall: true,
+                    load_method: "default",
+                    location: "footer",
+                    visibility: "storefront",
+                    kind: "script_tag",
+                    consent_category: "essential"
+                };
+            }
+
+            const response = await fetch(scriptAPIEndpoint, {
+                method: "POST",
+                headers: {
+                    "X-Auth-Token": access_token,
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                body: JSON.stringify(body),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(`Failed to create script "${scriptName}" in BigCommerce:`, data);
+                throw new Error(data.title || `BigCommerce script creation failed for ${scriptName}`);
+            }
+
+            console.log(`Script "${scriptName}" created successfully:`, data);
+            createdScripts.push(data);
         }
 
-        console.log("Script created successfully:", data);
+        return createdScripts;
 
-        return data;
-    
     } catch (error) {
-    
-        console.error("Error creating script in BigCommerce:", error.message);
+        console.error("Error in createRequiredScriptsInBigCommerce:", error.message);
         throw error;
-    
     }
-
 }
-
 
 export async function bigCScriptsCreatedUsingThisAccessToken(store_hash, access_token) {
 
@@ -83,4 +128,48 @@ export async function bigCScriptsCreatedUsingThisAccessToken(store_hash, access_
     
     }
 
+}
+
+export async function deleteScriptsFromBigCommerce(store_hash, access_token, arrayOfUUIDs = []) {
+
+    let scriptsAlreadyCreated = await bigCScriptsCreatedUsingThisAccessToken(store_hash, access_token)
+    
+    scriptsAlreadyCreated = scriptsAlreadyCreated.filter(({name: createdScript}) => requiredScripts.includes(createdScript)).map(({uuid}) => uuid)
+
+    arrayOfUUIDs = scriptsAlreadyCreated
+
+    const baseURL = `https://api.bigcommerce.com/stores/${store_hash}/v3/content/scripts`;
+
+    const deleted = [];
+    const failed = [];
+
+    for (const uuid of arrayOfUUIDs) {
+        const url = `${baseURL}/${uuid}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "X-Auth-Token": access_token,
+                    "Accept": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(`Failed to delete script ${uuid}:`, errorData);
+                failed.push({ uuid, error: errorData });
+                continue;
+            }
+
+            console.log(`Deleted script with UUID: ${uuid}`);
+            deleted.push(uuid);
+
+        } catch (error) {
+            console.error(`Error deleting script ${uuid}:`, error.message);
+            failed.push({ uuid, error: error.message });
+        }
+    }
+
+    return { deleted, failed };
 }

@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+
+store-wise-main-scripts
+
 # next.js
 /.next/
 /out/

@@ -1,0 +1,11 @@
+<script>
+window.page_type = '{{page_type}}'; // parsed by BigCommerce Stencil
+window.categoryId = '';
+window.productId = '';
+window.store_hash = '{{settings.store_hash}}';
+if (window.page_type === 'category') {
+  window.categoryId = '{{category.id}}';
+} else if (window.page_type === 'product') {
+  window.productId = '{{product.id}}';
+}
+</script>

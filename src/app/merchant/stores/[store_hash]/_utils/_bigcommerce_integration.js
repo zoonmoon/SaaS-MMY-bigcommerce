@@ -52,7 +52,7 @@ export  function calculatePostedAgo(date) {
 
 export  function  ScriptManager({storeData}){
 
-    const [bigCommerceIntegrationStatus, setBigCommerceIntegrationStatus] = React.useState({scripts: []})
+    const [bigCommerceIntegrationStatus, setBigCommerceIntegrationStatus] = React.useState({requiredScripts: [], scripts: [], all_scripts_already_created:false})
     const [isLoading, setIsLoading] = React.useState(true)
     const [managingYmmScript, setManagingYmmScript] = React.useState(false )
 
@@ -114,9 +114,18 @@ export  function  ScriptManager({storeData}){
         }
     }
 
-    const updateScript = () => addYmmScript('Script updated', 'PUT')
+    const updateScript = () => addYmmScript('Scripts updated', 'PUT')
 
-    const addScript = () => addYmmScript('Script added', 'POST')
+    const addScript = () => addYmmScript('Scripts added', 'POST')
+
+    const handleDeleteScripts = () => {
+        const userConfirmed = window.confirm("Are you sure you want to delete scripts?");
+        if(userConfirmed){
+            addYmmScript('Scripts deleted', 'DELETE')
+        }else{
+            toast('Deletion cancelled')
+        }
+    }
 
     if(isLoading) return(<LoadingSpinner />)
     
@@ -125,48 +134,56 @@ export  function  ScriptManager({storeData}){
         <Stack spacing={2}>   
             {
                 managingYmmScript && (
-                    <Alert severity={'info'}>Adding YMM Script can take some time</Alert>
+                    <Alert severity={'info'}>Managing YMM Scripts can take some time</Alert>
                 )
             }
             {
-                bigCommerceIntegrationStatus.scripts.length == 0 
-                    ? (
+                bigCommerceIntegrationStatus.requiredScripts.map(reqScript => {
+
+                    if(bigCommerceIntegrationStatus.scripts.map(s => s.name).includes(reqScript) && !managingYmmScript){
+
+                        return(
+                            <Alert  severity={'success'}>{reqScript} been added in BigCommerce Script Manager</Alert>
+                        )
+                    }else if (!managingYmmScript && !(bigCommerceIntegrationStatus.scripts.map(s => s.name).includes(reqScript))){
+
+                        return(
+                            <Alert  severity={'error'}>{reqScript} has not been added in BigCommerce Script Manager</Alert>
+                        )
+                    }
+
+                })
+            }
+            {
+                bigCommerceIntegrationStatus.all_scripts_already_created == true
+                    && (
                         <>
                             {
                                 !managingYmmScript && (
-                                    <Alert  severity={'warning'}>YMM script has not been added in BigCommerce Script Manager</Alert>
+                                    <>
+                                        <Alert severity={'success'}>
+                                            All YMM Scripts have been added to the Script Manager accessible at <i> storefront{' -> '}script manager</i> in BigCommerce admin
+                                        </Alert>                                                
+                                    </>
                                 )
                             }
-                            <div>
-                                <Button loading={managingYmmScript} onClick={addScript}  variant={'solid'}>Add YMM Script</Button>
-                            </div>
                         </>
-                    ): (
-                        bigCommerceIntegrationStatus.scripts.length > 1
-                            ?(
-                                <Alert severity={'error'}>
-                                    More than one YMM script has been created for this script. Please delete unnecessary scripts from BigCommerce Script Manager so that is only one YMM script.
-                                </Alert>
-                            ): (
-                                <>
-                                    {
-                                        !managingYmmScript && (
-                                            <>
-                                                <Alert severity={'success'}>
-                                                    YMM Script has been added to the Script Manager accessible at <i> storefront{' -> '}script manager</i> in BigCommerce admin
-                                                </Alert>                                                
-                                            </>
-
-                                        )
-                                    }
-                                    <Divider></Divider>
-                                    <div>
-                                        <Button loading={managingYmmScript}  variant={'solid'} onClick={updateScript}>Update Script</Button>
-                                    </div>
-                                </>
-                            )
                     )
             }
+            <Divider></Divider>
+            <Stack direction={'row'} spacing={2}>
+                {
+                    bigCommerceIntegrationStatus.all_scripts_already_created === false && (
+                        <Button loading={managingYmmScript} onClick={addScript}  variant={'solid'}>Add YMM Scripts</Button>
+                    )
+                }
+                {
+                    bigCommerceIntegrationStatus.scripts.length > 0 && (
+                        <Button loading={managingYmmScript} onClick={handleDeleteScripts} color={'danger'} variant={'solid'}>Delete YMM Scripts</Button>
+                    )
+                }
+            </Stack>
+
         </Stack>
     )
 }

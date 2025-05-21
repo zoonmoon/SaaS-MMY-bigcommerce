@@ -4,6 +4,8 @@ import { fetchStoreData } from "../indexing/fitment-data/fetch_store_data"
 import { deleteSearchKeywords } from "./utils"
 import { deleteAllWidgetsAndTemplates } from "../bigcommerce-integration/widget-manager/utils"
 
+import { deleteScriptsFromBigCommerce } from "../bigcommerce-integration/script-manager/utils"
+
 export async function POST(request, {params}){
 
     // de-activates store
@@ -18,6 +20,8 @@ export async function POST(request, {params}){
         await deleteSearchKeywords(storeData) 
 
         await deleteAllWidgetsAndTemplates(storeData.store_hash, storeData.access_token)
+
+        await deleteScriptsFromBigCommerce(store_hash, storeData.access_token)
 
         return new Response(JSON.stringify({success: true, message : "Store deactivated"}))
         

@@ -1,6 +1,8 @@
 import { updateDoc } from "@/app/api/_lib/opensearch/update_doc"
 import { fetchStoreData } from "../indexing/fitment-data/fetch_store_data"
 
+import openSearchClient from "@/app/api/_lib/opensearch"
+
 import { deleteSearchKeywords } from "./utils"
 import { deleteAllWidgetsAndTemplates } from "../bigcommerce-integration/widget-manager/utils"
 
@@ -22,6 +24,17 @@ export async function POST(request, {params}){
         await deleteAllWidgetsAndTemplates(storeData.store_hash, storeData.access_token)
 
         await deleteScriptsFromBigCommerce(store_hash, storeData.access_token)
+
+        await openSearchClient.deleteByQuery({
+            index: 'specs_rows',
+            body: {
+              query: {
+                term: {
+                  store_hash: store_hash
+                }
+              }
+            }
+        });
 
         return new Response(JSON.stringify({success: true, message : "Store deactivated"}))
         

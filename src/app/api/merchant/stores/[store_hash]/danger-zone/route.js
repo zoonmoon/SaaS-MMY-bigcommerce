@@ -25,6 +25,7 @@ export async function POST(request, {params}){
 
         await deleteScriptsFromBigCommerce(store_hash, storeData.access_token)
 
+        
         await openSearchClient.deleteByQuery({
             index: 'specs_rows',
             body: {

@@ -21,7 +21,9 @@ export default defineConfig(({ command, mode }) => {
       fileName: () => `main.js`,
       formats: ['iife'], // Immediately Invoked Function Expression (global usage)
     },
+    
     outDir: `./public/${process.env.YMM_SCRIPTS_FOLDER}`,
+    emptyOutDir:false,
     copyPublicDir:false
   },
 }

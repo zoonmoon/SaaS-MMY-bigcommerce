@@ -45,10 +45,7 @@ export async function createRequiredScriptsInBigCommerce(store_hash, access_toke
 
 
                 // Ensure destination folder exists and copy the script
-                await fs.mkdir(path.dirname(storeScriptDestPath), { recursive: true });
-                await fs.copyFile(mainScriptSrcPath, storeScriptDestPath);
-                console.log(`Copied main.js to store-specific path for ${store_hash}`);
-
+        
                 body = {
                     name: scriptName,
                     description: "External script for main YMM functionality",

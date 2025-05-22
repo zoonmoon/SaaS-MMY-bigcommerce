@@ -17,8 +17,8 @@ export async function POST(request){
     try{
 
 
-        const data = request.formData() 
-
+        const data = await  request.formData() 
+      
         const newSpreadSheetURL = data.get('spreadsheet_url') 
         const docID = data.get('doc_id')
 

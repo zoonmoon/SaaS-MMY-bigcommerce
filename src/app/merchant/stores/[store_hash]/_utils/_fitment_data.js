@@ -81,7 +81,7 @@ export function FitmentDataSource({storeData}){
                     <input  type="hidden" name="doc_id" value={storeData.id} />
                     <TextField sx={{marginTop: '0px!important'}}  label="Google Sheet URL" name="spreadsheet_url" value={storeData.spreadsheet_url}   />
                     <div>
-                        <Button  loading={isLoading || isSyncingFitmentSheet} type="submit" variant={'outlined'} >Update Fitment Sheet URL</Button>
+                        <Button  loading={isLoading || isSyncingFitmentSheet} type="submit" variant={'outlined'} >Change Google Fitment Sheet URL</Button>
                     </div>
                 </Stack>
 
@@ -93,7 +93,7 @@ export function FitmentDataSource({storeData}){
                             <Alert severity={'info'}>If you have recently updated google sheet, click the button below so that the sheet changes take effect instantly in the website dropdown filter</Alert>
                             <Alert severity={'info'}>The fitment sheet is automatically re-indexed once in 24 hours interval</Alert>
                             <div>
-                                    <Button loading={isSyncingFitmentSheet || isLoading} variant={'outlined'} onClick={syncFitmentSheet}>Synchronize Fitment Sheet</Button>
+                                    <Button loading={isSyncingFitmentSheet || isLoading} variant={'outlined'} onClick={syncFitmentSheet}>Synchronize Fitment Sheet Now</Button>
                                 </div>
                             </Stack>
                         </>

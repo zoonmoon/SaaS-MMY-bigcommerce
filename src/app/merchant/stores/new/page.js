@@ -36,18 +36,16 @@ export default function NewStore({params}){
             const response  = await fetch('/api/merchant/stores', { method: 'POST', body: formData });
 
             const responseJSON = await response.json() 
-
-            if(!responseJSON.success == false ) throw new Error(responseJSON.message)
             
-            toast(responseJSON.message)
 
-            if(responseJSON.success){
+            if(responseJSON.success == true ){
+                toast(responseJSON.message)
+                console.log("helo1234")
                 window.location.href = '/merchant/stores/'+store_hash
             }
             
         }catch(error){
             toast(error.message)
-        }finally{
             setIsLoading(false)
         }
 

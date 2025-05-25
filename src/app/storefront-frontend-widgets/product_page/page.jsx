@@ -128,6 +128,7 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
                                                     <div onClick={handleChangeSelection} style={{textDecoration:'underline', cursor:'pointer' }}>
                                                         Change Selection
                                                     </div>
+                                                    <div>or</div>
                                                     <div onClick={viewProductsThatFitYourSelection} style={{textDecoration:'underline', cursor:'pointer' }}>
                                                         View products that fit your selection
                                                     </div>

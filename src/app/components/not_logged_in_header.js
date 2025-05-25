@@ -17,7 +17,7 @@ import { Button } from '@mui/joy';
 import Link from 'next/link';
 
 const drawerWidth = 240;
-const navItems = [{label: 'Product', href:'/product'}, {label: 'Pricing', href: '/pricing'}, {label: 'Contact us', href: '/contact-us'}];
+const navItems = [{label: 'How it Works', href:'/how-it-works'}, {label: 'Pricing', href: '/pricing'}, {label: 'Contact us', href: '/contact-us'}];
 const navItemsRight = [{label: 'Log In', href: '/login'}, {label: 'Register', href: '/register'}]
 
 function DrawerAppBar(props) {
@@ -47,7 +47,7 @@ function DrawerAppBar(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box  sx={{ display: 'flex', top:0,  position:'sticky', marginBottom:'30px' }}>
+    <Box  sx={{ display: 'flex', zIndex:5, top:0,  position:'sticky', marginBottom:'30px' }}>
       <CssBaseline />
       <AppBar color={'inherit'}  sx={{paddingTop:'8px', minHeight:'83px', paddingBottom:'8px', position:'unset'}} component="nav">
         <Toolbar sx={{display:'flex', justifyContent:'space-between'}}>

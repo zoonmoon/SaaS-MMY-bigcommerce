@@ -46,9 +46,9 @@ export default function SpecsDropdownWidgetProductPage({widgetProps = {}}){
             toast(error.message)
         
         }finally{
-        
+            
             setIsLoadingProductSearchKeywords(false)
-        
+            
         }
     }
 

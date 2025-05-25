@@ -50,7 +50,7 @@ function DrawerAppBar(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box  sx={{ display: 'flex',  position:'sticky', top: 0,  marginBottom:'30px' }}>
+    <Box  sx={{ display: 'flex',  position:'sticky', top: 0, zIndex:5, marginBottom:'30px' }}>
       <CssBaseline />
       <AppBar color={'inherit'}  sx={{position:'unset', paddingTop:'8px', paddingBottom:'8px'}} component="nav">
         <Toolbar sx={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>

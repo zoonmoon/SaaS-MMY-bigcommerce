@@ -52,6 +52,20 @@
   background-color: #0056b3;
 }
 
+.buttons-holder{
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+}
+
+.link-holder a{
+  color:white;
+  border:2px solid white;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
 /* Desktop: overlay back on top */
 @media (min-width: 768px) {
   .hero-banner {

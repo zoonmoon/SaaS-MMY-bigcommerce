@@ -1,0 +1,41 @@
+.features-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 2rem;
+  background-color: #1e1e26; /* dark background */
+  text-align: center;
+  color: #00e6c3; /* neon cyan text */
+}
+
+@media (min-width: 768px) {
+  .features-section {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+  }
+}
+
+.feature {
+  flex: 1;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #00e6c3;
+}
+
+.feature p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #bfffee;
+}

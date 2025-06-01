@@ -4,7 +4,7 @@ import "./features.css"; // Make sure this file is in the same folder
 
 const Features = () => {
   return (
-    <div style={{padding:'2rem'}}>
+    <div style={{padding:'3rem', marginBottom:'30px' }}>
         <h2 style={{textAlign:'center'}}>Fitment Lookup Features</h2>
         <div className="vl-container">
 
@@ -31,6 +31,7 @@ const Features = () => {
                 src="/videos/demo.mp4"
                 autoPlay
                 muted
+                loop={true}
                 playsInline
                 controls={false}
                     onLoadedMetadata={(e) => {

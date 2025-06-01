@@ -32,7 +32,7 @@ export default function HowItWorks(){
                     <div className="step-number">2</div>
                     <h3 className="step-title">We prepare fitment data 📊</h3>
                     <p className="step-description">
-                        We manage the complete preparation of fitment data, eliminating the complexity for you. Our team delivers accurate and comprehensive compatibility data tailored to your entire product catalog.
+                        We manage the complete preparation of fitment data, eliminating the complexity for you. Our team manages accurate and comprehensive compatibility data tailored to your entire product catalog.
                     </p>
                 </div>
             </div>

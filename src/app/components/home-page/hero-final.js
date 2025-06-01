@@ -4,7 +4,7 @@ import "./hero-final.css"; // Make sure this file is in the same folder
 
 const HeroFinal = () => {
   return (
-    <div style={{maxWidth:'100%', borderBottomLeftRadius:'60px', borderBottomRightRadius:'60px', background:'#1e1e26', padding:'40px', paddingBottom:'60px', color:'#00e6c3', overflowX:'hidden',}}>
+    <div style={{maxWidth:'100%',  background:'#1e1e26', padding:'40px', paddingBottom:'60px', color:'#00e6c3', overflowX:'hidden',}}>
         <div className="final-vl-container">
            <div className="final-vl-video" style={{maxWidth:'50%'}}>
                 <video

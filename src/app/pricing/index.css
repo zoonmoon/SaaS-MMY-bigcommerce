@@ -190,7 +190,7 @@ body {
 
 .pricing-card.professional {
   background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-  border-color: #cbd5e1;
+  border-color: #3b82f6
 }
 
 .pricing-card.professional:hover {
@@ -200,9 +200,16 @@ body {
 
 .pricing-card.starter {
   background: linear-gradient(135deg, #faf5ff, #f3e8ff);
-  border-color: #a855f7;
+  border-color: #cbd5e1;
   box-shadow: 0 10px 15px -3px rgba(168, 85, 247, 0.2);
 }
+
+.pricing-card.starter:hover {
+  border-color: #3b82f6;
+}
+
+
+
 
 .pricing-card.enterprise {
   background: linear-gradient(135deg, #f8fafc, #e2e8f0);

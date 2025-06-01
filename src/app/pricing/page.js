@@ -202,9 +202,11 @@ const YMMPricingPlan = () => {
               Annual
             </span>
             {isAnnual && (
-              <span className="savings-badge">
+              <div style={{display:'block'}}>
+              <div className="savings-badge">
                 Save up to 20%
-              </span>
+              </div>
+              </div>
             )}
           </div>
         </div>

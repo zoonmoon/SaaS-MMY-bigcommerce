@@ -25,13 +25,15 @@ export default function HowItWorks(){
                 <div className="step-visual">
                     <div className="visual-box">
                         <span className="icon sheet-icon">📊</span>
-                        <div className="visual-text">Google Sheets<br />Compatibility Database</div>
+                        <div className="visual-text">Fitment<br />Compatibility Data</div>
                     </div>
                 </div>
                 <div className="step-content">
                     <div className="step-number">2</div>
-                    <h3 className="step-title">We Build a Fitment Sheet 📊</h3>
-                    <p className="step-description">We create a comprehensive Google Sheet database containing full Year, Make, Model compatibility data for your entire product catalog. This becomes your master fitment reference with thousands of vehicle combinations.</p>
+                    <h3 className="step-title">We prepare fitment data 📊</h3>
+                    <p className="step-description">
+                        We manage the complete preparation of fitment data, eliminating the complexity for you. Our team delivers accurate and comprehensive compatibility data tailored to your entire product catalog.
+                    </p>
                 </div>
             </div>
             
@@ -45,7 +47,7 @@ export default function HowItWorks(){
                 <div className="step-content">
                     <div className="step-number">3</div>
                     <h3 className="step-title">We Set It Up for You 🛠️</h3>
-                    <p className="step-description">We implement the YMM fitment filters directly on your website. Your customers can now select their vehicle year, make, and model to see only compatible parts. Everything is configured and ready to use.</p>
+                    <p className="step-description">We implement the YMM fitment filters directly on the website tailored to your requirements. Your customers can now select their vehicle year, make, and model to see only compatible parts. Everything is configured and ready to use.</p>
                 </div>
             </div>
         </div>

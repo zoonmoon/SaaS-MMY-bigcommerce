@@ -1,5 +1,5 @@
 'use client'
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function ContactUs() {
   const iframeRef = useRef(null);
@@ -24,22 +24,30 @@ export default function ContactUs() {
     }
   };
 
+  // useEffect(() =>{
+  //   window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSfMmn9sxxvt4cuy9QYNd5hL1IesQv4FM1apcXYkJxZ9xXbpnw/viewform'
+  // })
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-      <iframe
-        ref={iframeRef}
-        src="https://docs.google.com/forms/d/e/1FAIpQLSfMmn9sxxvt4cuy9QYNd5hL1IesQv4FM1apcXYkJxZ9xXbpnw/viewform?embedded=true"
-        width="640"
-        height="1200"
-        style={{ border: 'none' }}
-        frameBorder="0"
-        marginHeight="0"
-        marginWidth="0"
-        onLoad={handleIframeLoad}
-        title="Contact Form"
-      >
-        Loading…
-      </iframe>
+      <div>
+        <div style={{textAlign:'center'}}>Please use the Google form below to contact us. It may take some time to load the form.</div>
+        <br />
+        <iframe
+          ref={iframeRef}
+          src="https://docs.google.com/forms/d/e/1FAIpQLSfMmn9sxxvt4cuy9QYNd5hL1IesQv4FM1apcXYkJxZ9xXbpnw/viewform?embedded=true"
+          width="640"
+          height="400"
+          style={{ border: 'none' }}
+          frameBorder="0"
+          marginHeight="0"
+          marginWidth="0"
+          onLoad={handleIframeLoad}
+          title="Contact Form"
+        >
+          Loading…
+        </iframe>
+      </div>
     </div>
   );
 }

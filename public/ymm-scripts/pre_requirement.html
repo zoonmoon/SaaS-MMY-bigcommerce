@@ -8,4 +8,70 @@ if (window.page_type === 'category') {
 } else if (window.page_type === 'product') {
   window.productId = '{{product.id}}';
 }
+ 
+if(window.page_type == 'category'){
+
+
+  function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  const ymmCookie = getCookie('ymm_specs');
+
+  let selectedSpecs = '' 
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ymmSpecsParam = urlParams.get('ymm_specs');
+
+  if(ymmSpecsParam){
+
+    selectedSpecs = ymmSpecsParam 
+
+  }else if(ymmCookie){
+
+      const ymmObj = JSON.parse(ymmCookie);
+      
+      selectedSpecs = Object.values(ymmObj)
+          .sort((a, b) => a.sortOrder - b.sortOrder)
+          .map(spec => `${spec.specKey}:${spec.selectedValue}`)
+          .join('::');
+  }
+
+
+  if (selectedSpecs && selectedSpecs != '' ) {
+
+      // ymm is already selected
+      // user is in category page
+
+      try {
+
+          const qParam = urlParams.get('q');
+
+          if (qParam && qParam.includes(selectedValues)) {
+              
+            console.log('Match found in URL:', selectedSpecs);
+              // user is in correct page 
+              // nothing need to be done next
+
+            }else{
+
+            // match not found
+            // redirect to the correct category link with query in url 
+            // so that the products get filtered by that query
+            const url = window.location.pathname;
+            const basePath = url.split('/').slice(0, 3).join('/');
+            console.log(basePath); /*  /sundance-spas/  */
+            window.location.href = `${basePath}?q="${selectedSpecs}"&ymm_specs=${selectedSpecs}`; 
+
+          }
+
+      } catch (e) {
+        
+        console.error('Error parsing ymm_specs cookie:', e);
+        
+      }
+  }
+}
+
 </script>

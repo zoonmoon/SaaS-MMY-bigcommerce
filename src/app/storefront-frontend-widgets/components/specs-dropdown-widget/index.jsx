@@ -173,7 +173,7 @@ export function SpecsDropdownWidget(
             let fits = returnYMMspecsFromURL()
     
             const selectedSpecs = Cookies.get('ymm_specs') 
-    
+            
             if(fits == null && selectedSpecs){
     
                 let selectedValues = Object.values(JSON.parse(selectedSpecs))

@@ -16,7 +16,7 @@ const Features = () => {
                 </p>
                 <ul>
                     <li><strong>US Service and Support</strong></li>
-                    <li><strong>My Garage and Saved Vehicle Search</strong></li>
+                    <li><strong>My Spa Selector and Saved Choices</strong></li>
                     <li><strong>Product Page Fitment Validator</strong></li>
                     <li><strong>Product Page Fitment Table</strong></li>
                     <li><strong>Required & Optional Fitment Qualifiers</strong></li>

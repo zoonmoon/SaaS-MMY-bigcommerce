@@ -13,7 +13,18 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
   const [selectedSpecsDetailedInfo, setSelectedSpecsDetailedInfo] = useState('')
 
   const callBack = (selectedSpecs) => {
-    window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
+    
+    const currentPage = window.page_type 
+    
+    if(currentPage == 'category'){
+      const url = window.location.pathname;
+      const basePath = url.split('/').slice(0, 3).join('/');
+      console.log(basePath); /*  /sundance-spas/  */
+      window.location.href = `${basePath}?q="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
+    }else{
+      window.location.href = `/search.php?search_query="${selectedSpecs}"&ymm_specs=${selectedSpecs}`;  //
+    }
+
   };
 
   const [isDropdownWidgetsOpen, setIsDropdownWidgetsOpen] = useState(false) 

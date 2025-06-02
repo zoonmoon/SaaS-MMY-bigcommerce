@@ -56,6 +56,10 @@ if(window.page_type == 'category'){
 
             }else{
 
+              if(document.querySelector('#ymm-search-page-widget')){
+                document.querySelector('#ymm-search-page-widget').innerHTML  = 'Loading...Please wait'
+              }
+              
             // match not found
             // redirect to the correct category link with query in url 
             // so that the products get filtered by that query

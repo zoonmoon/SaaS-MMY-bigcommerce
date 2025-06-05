@@ -17,7 +17,7 @@ import { Button } from '@mui/joy';
 import Link from 'next/link';
 
 const drawerWidth = 240;
-const navItems = [{label: 'Stores', href: '/merchant/stores'}, {label: 'Admins', href: "/admins/"}];
+const navItems = [{label: 'Stores', href: '/merchant/stores'}, {label: 'Settings', href:'/settings'},  {label: 'Admins', href: "/admins/"}];
 const navItemsRight = [{label: 'Log Out', href: '/logout'}]
 
 function DrawerAppBar(props) {

@@ -8,11 +8,11 @@ const HeroFinal = () => {
         <div className="final-vl-container">
            <div className="final-vl-video" style={{maxWidth:'50%'}}>
                 <video
-                src="/videos/demo-2.mp4"
+                src="/videos/demo-2-1.mp4"
                 autoPlay
                 muted
                 loop={true}
-                style={{borderRadius:'60px'}}
+                style={{borderRadius:'20px', border:'2px solid white'}}
                 playsInline
                 controls={false}
                     onLoadedMetadata={(e) => {
@@ -24,7 +24,7 @@ const HeroFinal = () => {
             <div className="final-vl-features" style={{textAlign:'center'}}>
                 <h5 style={{fontSize:'25px'}} className="final-elementor-heading-title elementor-size-default">[MORE CONVERSIONS. LESS RETURNS.]</h5>
                 <h1 style={{fontSize:'50px'}}>Revolutionize Your Spa Parts Search</h1>
-                <p style={{color:'#00e6c3'}}>MMY Lookup & Fitment Validation by Experienced Industry Veterans</p>
+                <p style={{color:'#00e6c3'}}>YMM Lookup & Fitment Validation by Experienced Industry Veterans</p>
             </div>
  
         </div>

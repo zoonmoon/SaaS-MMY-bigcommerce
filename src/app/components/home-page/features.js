@@ -28,8 +28,8 @@ const Features = () => {
             
             <div className="vl-video">
                 <video
-                style={{border:'2px solid white'}}
-                src="/videos/demo.mp4"
+                style={{border:'2px solid white!important'}}
+                src="/videos/demo-f.mp4"
                 autoPlay
                 muted
                 loop={true}

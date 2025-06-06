@@ -89,7 +89,7 @@ export async function GET(request){
             var selectedSpecsInfoArr = selectedSpecsInfo.split('::') // key:val separaated by :: 
             selectedSpecsInfoArr.forEach(selectedVehicleSpec => {
                 let [key, val] = selectedVehicleSpec.split(':') 
-                must.push({ match: { [`row.${key}.value_key`]: val }});
+                must.push({ term: { [`row.${key}.value_key.keyword`]: val }});
             })
         }
 

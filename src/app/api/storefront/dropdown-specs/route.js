@@ -89,7 +89,7 @@ export async function GET(request){
             var selectedSpecsInfoArr = selectedSpecsInfo.split('::') // key:val separaated by :: 
             selectedSpecsInfoArr.forEach(selectedVehicleSpec => {
                 let [key, val] = selectedVehicleSpec.split(':') 
-                must.push({ term: { [`row.${key}.value_key`]: val.toLowerCase() }});
+                must.push({ match: { [`row.${key}.value_key`]: val }});
             })
         }
 
@@ -131,7 +131,7 @@ export async function GET(request){
         })
 
         return new Response(
-            JSON.stringify({query, aggs, dropdownData, responseContainsValidSpecsSettings, specsSettings})
+            JSON.stringify({query, must, aggs, dropdownData, responseContainsValidSpecsSettings, specsSettings})
         )
         
     }catch(error){

@@ -12,7 +12,7 @@ const HeroFinal = () => {
                 autoPlay
                 muted
                 loop={true}
-                style={{borderRadius:'20px', border:'2px solid white'}}
+                style={{borderRadius:'20px', maxWidth:'350px', border:'2px solid white'}}
                 playsInline
                 controls={false}
                     onLoadedMetadata={(e) => {

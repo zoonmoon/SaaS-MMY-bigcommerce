@@ -126,6 +126,8 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
         overflow-wrap: break-word!important;
         word-break: break-word!important;
         white-space: normal!important;
+        padding-left:10px!important;
+        padding-right:10px!important;
       }
     `}</style>
 

@@ -120,6 +120,15 @@ export default function SpecsDropdownWidgetSearchPage({widgetProps = {}}){
 
   return(
     <div style={{paddingTop:'20px', paddingBottom:'20px'}}>
+
+    <style>{`
+      .page-heading {
+        overflow-wrap: break-word!important;
+        word-break: break-word!important;
+        white-space: normal!important;
+      }
+    `}</style>
+
       {
         isLoadingHashVsDetails 
           ? 
